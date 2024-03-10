@@ -13,6 +13,6 @@ class Sms:
             from_='+18337970829',
             body=msg,
             to='+18609673158',
+            )
         logging.info("Sent text")
-)
 
