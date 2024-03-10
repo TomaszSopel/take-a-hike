@@ -34,11 +34,11 @@ jobs:
         with:
           python-version: '3.x' 
       - run: |
-          echo $HEROKU_API_KEY | base64 --decode -w0 > ~/.netrc
+          echo $TOKEN_FILE | base64 --decode -w0 > ~/.netrc
           heroku git:remote -a take-a-hike
           git push heroku main 
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          TOKEN_FILE: ${{ secrets.HEROKU_API_KEY }}
     environment: staging
 
         
