@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=C,R,W  # Disable convention (C), refactoring (R), and warning (W) messages
+; disable=C,R,W  # Disable convention (C), refactoring (R), and warning (W) messages
 
 [BASIC]
 fail-under=7.0  # Fail if the overall score is below 7.0
