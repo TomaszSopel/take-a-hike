@@ -8,7 +8,7 @@ import logging
 app = Flask(__name__)
 
 # TODO 5: Create a decorator 
-@app.route("/")
+@app.route("/", methods = ['GET', 'POST'])
 # TODO 4: Create a Root (an endpoint on the API that we can go to to get some kind of data)
 def hello_world():
     messenger = Sms()
