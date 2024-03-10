@@ -8,7 +8,7 @@ TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
 
 def main():
     messenger = Sms(TWILIO_SID,TWILIO_AUTH_TOKEN)
-    messenger.send_message("Message sent from code hosted on Heroku!")
+    messenger.send_message("Test Message")
     
 
 if __name__ == "__main__":
