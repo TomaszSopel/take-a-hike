@@ -2,13 +2,10 @@ import os
 from sms import Sms
 from twilio.rest import Client
 from hike_api import app
-
-TWILIO_SID = os.environ['TWILIO_SID'] 
-TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
+import logging
 
 def main():
-    messenger = Sms(TWILIO_SID,TWILIO_AUTH_TOKEN)
-    messenger.send_message("Test Message")
+    logging.info("Main Started")
     
 
 if __name__ == "__main__":

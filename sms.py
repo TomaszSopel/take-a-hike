@@ -1,9 +1,10 @@
 from twilio.rest import Client
+import os
 
 class Sms:
-    def __init__(self, sid, token):
-        self.account_sid = sid
-        self.auth_token = token
+    def __init__(self):
+        self.account_sid = os.environ['TWILIO_SID'] 
+        self.auth_token = os.environ['TWILIO_AUTH_TOKEN']
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_message(self, msg):
