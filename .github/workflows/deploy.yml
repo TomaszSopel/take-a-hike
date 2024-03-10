@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -30,8 +30,14 @@ jobs:
     needs: [ pylint ]  # Needs the "pylint" job to succeed before running
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x' 
-      - run: git push heroku main 
+      - run: |
+          heroku git:remote -a take-a-hike
+          git push heroku main 
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    environment: staging
+    
         
