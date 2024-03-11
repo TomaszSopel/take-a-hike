@@ -1,12 +1,15 @@
-import pytest
-from hike_api import app
+import unittest
+from unittest.mock import patch
+from hike_api import hello_world
 
-@pytest.fixture
-def client():
-    with app.test_client() as client:
-        yield client
+class TestSmsFunctionality(unittest.TestCase):
 
-def test_hello_world(client):
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == "Hello World!"
+    @patch('hike_api.Sms')  # Mock the Sms class
+    def test_send_message_called(self, mock_sms):
+        hello_world()  # Call the endpoint function
+
+        # Assert that Sms object was created
+        mock_sms.assert_called_once() 
+
+        # Assert that send_message was called on the mock
+        mock_sms.return_value.send_message.assert_called_once_with("Get Message Sent")
