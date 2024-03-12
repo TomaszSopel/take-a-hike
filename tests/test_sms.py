@@ -1,4 +1,5 @@
 import unittest
+import os
 from unittest.mock import patch
 from sms import Sms
 
@@ -11,7 +12,7 @@ class TestSms(unittest.TestCase):
         sms.send_message("test")
 
         mock_client.return_value.messages.create.assert_called_once_with(
-            from_='+18337970829',
+            from_=os.environ.get('TWILIO_NUMBER'),
             body="test",
-            to='+18609673158',
+            to=os.environ.get('TESTING_NUMBER'),
         )
