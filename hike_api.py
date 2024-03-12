@@ -17,14 +17,19 @@ def hello_world():
     logging.info("Hello world started")
     return "Hello World!"
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods = ['POST'])
 def receive_text():
-    if request.method == 'POST':
-        message_body = request.get_json()
-        
-    messenger = Sms()
-    messenger.send_message("Message received! 1/2")
-    messenger.send_message("Message received! 2/2")
+    try:
+        if request.method == 'POST':
+            message_body = request.get_json()
+            
+        messenger = Sms()
+        messenger.send_message("Message received! 1/2")
+        messenger.send_message("Message received! 2/2")
+        return "Message received successfully!", 200
+    except Exception as e:
+        logging.error(f"Error Message: {e}")
+        return "Error occurred", 500
 # TODO 3: Run Flask Application
 if __name__ == "__main__":
     app.run(debug=True)
