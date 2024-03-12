@@ -20,8 +20,8 @@ def hello_world():
 @app.route('/', methods = ['POST'])
 def receive_text():
     try:
-        if request.method == 'POST':
-            message_body = request.get_json()
+        # if request.method == 'POST':
+        #     message_body = request.get_json()
             
         messenger = Sms()
         messenger.send_message("Message received! 1/2")
