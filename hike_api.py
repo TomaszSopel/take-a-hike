@@ -21,8 +21,10 @@ def hello_world():
 def receive_text():
     if request.method == 'POST':
         message_body = request.get_json()
-        print(message_body)
-
+        
+        messenger = Sms()
+        messenger.send_message("Message received! 1/2")
+        messenger.send_message("Message received! 2/2")
 # TODO 3: Run Flask Application
 if __name__ == "__main__":
     app.run(debug=True)
