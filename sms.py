@@ -11,9 +11,9 @@ class Sms:
 
     def send_message(self, msg):
         message = self.client.messages.create(
-            from_='+18337970829',
+            from_=os.environ.get('TWILIO_NUMBER'),
             body=msg,
-            to='+18609673158',
+            to=os.environ.get('TESTING_NUMBER'),
             )
         logging.info("Sent text")
 
