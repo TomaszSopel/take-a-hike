@@ -1,9 +1,10 @@
 # TODO 1: Import Dependencies
-from flask import Flask, request, jsonify
-from sms import Sms
 import logging
+from flask import Flask, request
+from sms import Sms
 
 
+handler = logging.FileHandler('hike_api.log')
 # TODO 2: Create Flask Application
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def hello_world():
     messenger = Sms()
     messenger.send_message("Get Message Sent")
     logging.info("Hello world started")
-    return "Hello World! World!"
+    return "Hello World!"
 
 @app.route('/', methods=['POST'])
 def receive_text():
