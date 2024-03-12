@@ -3,9 +3,10 @@ import os
 import logging
 
 class Sms:
+    """Creates Sms object that can send messages via Twilio API"""
     def __init__(self):
-        self.account_sid = os.environ['TWILIO_SID'] 
-        self.auth_token = os.environ['TWILIO_AUTH_TOKEN']
+        self.account_sid = os.environ.get('TWILIO_SID')
+        self.auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_message(self, msg):
