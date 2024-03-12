@@ -20,13 +20,14 @@ def hello_world():
 @app.route('/', methods = ['POST'])
 def receive_text():
     try:
-        # if request.method == 'POST':
-        #     message_body = request.get_json()
+        if request.method == 'POST':
+            from_number = request.form.get("From")
+            from_body = request.form.get("Body")
             
-        messenger = Sms()
-        messenger.send_message("Message received! 1/2")
-        messenger.send_message("Message received! 2/2")
-        return "Message received successfully!", 200
+            messenger = Sms()
+            messenger.send_message(f"Message sent from: {from_number}")
+            messenger.send_message(f"Message Body: {from_body}")
+            return "Message received successfully!", 200
     except Exception as e:
         logging.error(f"Error Message: {e}")
         return "Error occurred", 500
