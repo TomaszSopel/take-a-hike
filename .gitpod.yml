@@ -7,3 +7,8 @@ tasks:
   - name: install-dependencies 
     init: |
       pip install -r requirements.txt
+  - init: pg_ctl start -D /workspace/data 
+    command: echo 'Database started!'  
+ports:
+  - port: 5432
+    onOpen: ignore
