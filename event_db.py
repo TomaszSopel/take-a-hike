@@ -19,4 +19,4 @@ result = cur.fetchone()
 print(result)
 
 cur.close()
-conn.close()
+connection.close()
