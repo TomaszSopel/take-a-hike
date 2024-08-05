@@ -1,14 +1,27 @@
-image:
+image: 
   file: .gitpod.Dockerfile
 vscode:
   extensions:
     - ms-python.python
+    - mtxr.sqltools
+    - mtxr.sqltools-driver-pg
 tasks:
   - name: install-dependencies 
     init: |
       pip install -r requirements.txt
   - init: pg_ctl start -D /workspace/data 
     command: echo 'Database started!'  
+  - name: Start postgreSQL
+    command: |
+      sudo /etc/init.d/postgresql start
+      gp sync-done database
+  - name: Initialize Database
+    init: |
+      psql -c 'CREATE DATABASE take_a_hike;'
+      psql -d take_a_hike -f /workspace/take-a-hike/path/to/schema.sql
+    command: echo "Database initialized"
+
 ports:
-  - port: 5432
+  - name: postgreSQL
+    port: 5432
     onOpen: ignore
