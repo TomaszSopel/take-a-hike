@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full
+FROM gitpod/workspace-postgres
 RUN curl https://cli-assets.heroku.com/install.sh 
 
 # Install PostgreSQL
