@@ -21,15 +21,15 @@ def connect():
 connection = connect()
 cur = connection.cursor()
 
-# cur.execute("SELECT * FROM users;")
-# result = cur.fetchall()
-# print(result)
+cur.execute("SELECT * FROM users;")
+result = cur.fetchall()
+print(result)
 
-def get_user(number:str):
-    id = cur.execute("SELECT user_id FROM users WHERE phone_number = f'{number}'")
-    print(id)
+# def get_user(number:str):
+#     id = cur.execute("SELECT user_id FROM users WHERE phone_number = f'{number}'")
+#     print(id)
 
-get_user('8609673158')
+# get_user('8609673158')
 
 cur.close()
 connection.close()
