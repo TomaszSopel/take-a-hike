@@ -18,7 +18,7 @@ tasks:
   - name: Initialize Database
     init: |
       psql -c 'CREATE DATABASE take_a_hike;'
-      psql -d take_a_hike -f /workspace/take-a-hike/path/to/schema.sql
+      psql -d take_a_hike -f /workspace/take-a-hike/schema.sql
     command: echo "Database initialized"
 
 ports:
