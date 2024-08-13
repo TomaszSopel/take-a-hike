@@ -26,12 +26,14 @@ cur = connection.cursor()
 # print(result)
 
 def get_user(number:str):
-    """Inputs a single phone number (str) and returns a single user_id (int)"""
-    cur.execute(f"SELECT user_id FROM users WHERE phone_number = '{number}'")
-    user_id = cur.fetchone()
-    return user_id[0]
-
-print(get_user("1234567890"))
+    """Inputs a single phone number (str) and returns a single user_id (int)
+    if they are in the users table, otherwise returns FALSE"""
+    try:
+        cur.execute(f"SELECT user_id FROM users WHERE phone_number = '{number}'")
+        user_id = cur.fetchone()
+        return user_id[0]
+    except TypeError:
+        return False
 
 def get_number(id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str)"""
@@ -39,7 +41,15 @@ def get_number(id:int):
     id = cur.fetchone()
     return id[0]
 
-print(get_number(1))
+def log_number(number:str):
+    """Inputs a phone number, if it already doesn't exist in the events table,
+    it will add it."""
+    if get_user(number) is False:
+        cur.execute(f"INSERT INTO users (phone_number) VALUES ({number});")
+        print(f"New user added, phone number: {number}")
+    else:
+        pass
 
+log_number('2345678901')
 # cur.close()
 # connection.close()
