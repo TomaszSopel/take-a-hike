@@ -35,7 +35,7 @@ def get_user(number:str):
     except TypeError:
         return False
 
-def get_number(id:int):
+def get_phone(id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns False."""
     try:
         cur.execute(f"SELECT phone_number FROM users WHERE user_id = '{id}'")
@@ -64,6 +64,8 @@ def get_event_id(code:str):
     except TypeError:
         return False
 
-print(get_event_id("Cherry"))
+def sign_up(user:int, event:int):
+    pass
+
 # cur.close()
 # connection.close()
