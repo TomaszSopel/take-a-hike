@@ -46,6 +46,7 @@ def log_number(number:str):
     it will add it."""
     if get_user(number) is False:
         cur.execute(f"INSERT INTO users (phone_number) VALUES ({number});")
+        connection.commit()
         print(f"New user added, phone number: {number}")
     else:
         pass
