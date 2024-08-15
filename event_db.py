@@ -36,13 +36,16 @@ def get_user(number:str):
         return False
 
 def get_number(id:int):
-    """Inputs a user id (int) and returns their corresponding phone number (str)"""
-    cur.execute(f"SELECT phone_number FROM users WHERE user_id = '{id}'")
-    id = cur.fetchone()
-    return id[0]
+    """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns False."""
+    try:
+        cur.execute(f"SELECT phone_number FROM users WHERE user_id = '{id}'")
+        id = cur.fetchone()
+        return id[0]
+    except TypeError:
+        return False
 
-def log_number(number:str):
-    """Inputs a phone number, if it already doesn't exist in the events table,
+def log_user(number:str):
+    """Inputs a phone number, if it already doesn't exist in the users table,
     it will add it."""
     if get_user(number) is False:
         cur.execute(f"INSERT INTO users (phone_number) VALUES ({number});")
@@ -51,6 +54,16 @@ def log_number(number:str):
     else:
         pass
 
-log_number('2345678901')
+def get_event_id(code:str):
+    """Inputs an event event code (str) and checks if the corresponding event 
+    exists in the events table, returning event id (int), otherwise False"""
+    try:
+        cur.execute(f"SELECT event_id FROM events WHERE event_code = '{code.lower()}'")
+        event_id = cur.fetchone()
+        return event_id[0]
+    except TypeError:
+        return False
+
+print(get_event_id("Cherry"))
 # cur.close()
 # connection.close()
