@@ -64,8 +64,15 @@ def get_event_id(code:str):
     except TypeError:
         return False
 
-def sign_up(user:int, event:int):
-    pass
+def sign_up(user_id:int, event_id:int):
+    """Inputs user id and event id and logs them into the user_events_signup table."""
+    try:
+        cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
+        connection.commit()
+    except FileNotFoundError:
+        print("File not Found")
+
+sign_up(4,2)
 
 # cur.close()
 # connection.close()
