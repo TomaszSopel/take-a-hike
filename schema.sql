@@ -66,7 +66,7 @@ CREATE TABLE public.user_event_signups (
     user_event_id integer NOT NULL,
     user_id integer,
     event_id integer,
-    signup_date date,
+    signup_date date DEFAULT CURRENT_DATE,
     attendance_confirmed boolean DEFAULT false
 );
 
@@ -151,6 +151,56 @@ ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.u
 
 
 --
+-- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: gitpod
+--
+
+COPY public.events (event_id, event_code, event_date, event_description, event_location, event_name) FROM stdin;
+1	cherry	2024-08-08	A walk up to Cherry Hill with a picnic at the top	White Memorial campgrounds	\N
+2	pine_mountain	2024-09-15	A hike up Pine Mountain with scenic views.	Pine Mountain Trailhead	\N
+\.
+
+
+--
+-- Data for Name: user_event_signups; Type: TABLE DATA; Schema: public; Owner: gitpod
+--
+
+COPY public.user_event_signups (user_event_id, user_id, event_id, signup_date, attendance_confirmed) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: gitpod
+--
+
+COPY public.users (user_id, phone_number) FROM stdin;
+3	2345678901
+4	1234567890
+5	9876543210
+\.
+
+
+--
+-- Name: events_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
+--
+
+SELECT pg_catalog.setval('public.events_event_id_seq', 2, true);
+
+
+--
+-- Name: user_event_signups_user_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
+--
+
+SELECT pg_catalog.setval('public.user_event_signups_user_event_id_seq', 1, false);
+
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
+--
+
+SELECT pg_catalog.setval('public.users_user_id_seq', 5, true);
+
+
+--
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: gitpod
 --
 
@@ -194,25 +244,3 @@ ALTER TABLE ONLY public.user_event_signups
 -- PostgreSQL database dump complete
 --
 
--- How I created it:
--- CREATE TABLE users (
---     user_id SERIAL PRIMARY KEY,
---     phone_number VARCHAR(15) UNIQUE NOT NULL
--- );
-
--- CREATE TABLE events (
---     event_id SERIAL PRIMARY KEY,
---     event_code VARCHAR(50) UNIQUE NOT NULL,
---     event_name VARCHAR(100) NOT NULL,
---     event_date DATE NOT NULL,
---     event_description TEXT,
---     event_location VARCHAR(100)
--- );
-
--- CREATE TABLE user_event_signups (
---     user_event_id SERIAL PRIMARY KEY,
---     user_id INTEGER REFERENCES users(user_id),
---     event_id INTEGER REFERENCES events(event_id),
---     signup_date DATE NOT NULL,
---     attendance_confirmed BOOLEAN DEFAULT FALSE
--- );
