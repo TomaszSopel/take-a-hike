@@ -6,4 +6,4 @@
 
 [TYPECHECK]
 # Ignore the psycopg2 errors, as pylint does not recognize this as valid
-ignored-classes=psycopg2.errors.ForeignKeyViolation
+ignored-classes=psycopg2.errors
