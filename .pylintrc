@@ -3,3 +3,7 @@
 
 [BASIC]
 ; fail-under=7.0  # Fail if the overall score is below 7.0
+
+[TYPECHECK]
+; Ignore the psycopg2 errors, as pylint does not recognize this as valid
+ignored-classes=psycopg2.errors.ForeignKeyViolation
