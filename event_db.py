@@ -64,6 +64,7 @@ def get_event_id(code:str):
     except TypeError:
         return False
 
+# TODO 1: Modify sign_up() to refuse duplicate signups
 def sign_up(user_id:int, event_id:int):
     """Inputs user id and event id and logs them into the user_events_signup table."""
     try:
@@ -72,7 +73,15 @@ def sign_up(user_id:int, event_id:int):
     except psycopg2.errors.ForeignKeyViolation:
         print("File not Found: You can control this error!!!")
 
-sign_up(50,2)
+def event_get_numbers(event_id:int):
+    """Inputs an event code (int) and returns all phone numbers signed up for the event (list[int])"""
+    try:
+        cur.execute(f"SELECT user_id FROM user_event_signups WHERE event_id = {event_id};")
+        return (cur.fetchall())
+    except:
+        print("Error")
+
+print(event_get_numbers(2))
 
 # cur.close()
 # connection.close()
