@@ -81,7 +81,15 @@ def event_get_numbers(event_id:int):
     except:
         print("Error")
 
-print(event_get_numbers(2))
+def get_events():
+    """Returns all events currently registered"""
+    try:
+        cur.execute(f"SELECT event_code FROM events;")
+        return (cur.fetchall())
+    except:
+        print("Error")
+
+print(get_events())
 
 # cur.close()
 # connection.close()
