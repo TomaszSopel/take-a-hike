@@ -1,29 +1,18 @@
 import os
 import psycopg2
 
-HOST = 'localhost'
-PORT = '5432'
-DATABASE = "take_a_hike"
-USER = "gitpod"
-
-
-
 def connect():
     conn = psycopg2.connect(
-        host = HOST,
-        port = PORT,
-        database = DATABASE,
+        host = os.environ.get('HOST'),
+        port = os.environ.get('PORT'),
+        database = os.environ.get('DATABASE'),
         # password = "7890",
-        user = USER
+        user = os.environ.get('USER')
     )
     return conn
 
 connection = connect()
 cur = connection.cursor()
-
-# cur.execute("SELECT * FROM users;")
-# result = cur.fetchone()
-# print(result)
 
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
