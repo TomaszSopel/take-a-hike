@@ -11,7 +11,3 @@ def main():
 if __name__ == "__main__":
     main()
     app.run(debug=True)
-
-testing_var = f"TESTING + {os.environ.get("fu")}"
-
-print(testing_var)
