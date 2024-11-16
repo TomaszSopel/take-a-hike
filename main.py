@@ -12,4 +12,6 @@ if __name__ == "__main__":
     main()
     app.run(debug=True)
 
-print("TESTING" + os.environ.get("fu"))
+testing_var = "TESTING" + os.environ.get("fu")
+
+print(testing_var)
