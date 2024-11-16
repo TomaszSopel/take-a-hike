@@ -9,12 +9,6 @@ tasks:
   - name: install-dependencies 
     init: |
       pip install -r requirements.txt
-  - init: pg_ctl start -D /workspace/data 
-    command: echo 'Database started!'  
-  - name: Start postgreSQL
-    command: |
-      sudo /etc/init.d/postgresql start
-      gp sync-done database
   - name: Initialize Database
     init: |
       psql -c 'CREATE DATABASE take_a_hike;'
