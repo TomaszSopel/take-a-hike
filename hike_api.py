@@ -4,7 +4,6 @@ from flask import Flask, request
 from sms import Sms
 
 
-handler = logging.FileHandler('hike_api.log')
 # TODO 2: Create Flask Application
 app = Flask(__name__)
 
