@@ -6,11 +6,12 @@ def connect():
         host = os.environ.get('HOST'),
         port = os.environ.get('PORT'),
         database = os.environ.get('DATABASE'),
-        # password = "7890",
+        password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         user = os.environ.get('USER')
     )
     return conn
 
+#TODO 1: write code that says, "if no password treat it as an empty string"
 connection = connect()
 cur = connection.cursor()
 
