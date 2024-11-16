@@ -79,7 +79,6 @@ def get_events():
     except:
         print("Error")
 
-print(get_events())
 
 # cur.close()
 # connection.close()

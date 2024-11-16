@@ -1,7 +1,8 @@
 # TODO 1: Import Dependencies
-import logging
+import logging, event_db
 from flask import Flask, request
 from sms import Sms
+
 
 
 # TODO 2: Create Flask Application
@@ -15,6 +16,11 @@ def hello_world():
     messenger.send_message("Get Message Sent")
     logging.info("Hello world started")
     return "Hello World!"
+
+@app.route("/database", methods = ['GET'])
+# TODO 4: Create a Root (an endpoint on the API that we can go to to get some kind of data)
+def database_test():
+    return event_db.get_events()
 
 @app.route('/', methods = ['POST'])
 def receive_text():
