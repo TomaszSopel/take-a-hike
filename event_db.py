@@ -1,19 +1,22 @@
 import os
 import psycopg2
 
-def connect():
-    conn = psycopg2.connect(
+def open_connection():
+    return psycopg2.connect(
         host = os.environ.get('HOST'),
         port = os.environ.get('PORT'),
         database = os.environ.get('DATABASE'),
         password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         user = os.environ.get('USER')
     )
-    return conn
+
+def close_connection(connection, cursor=None):
+    if cursor:
+        cursor.close()
+    if connection:
+        cursor.connection.close()
 
 #TODO 1: write code that says, "if no password treat it as an empty string"
-connection = connect()
-cur = connection.cursor()
 
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
@@ -24,6 +27,8 @@ def get_user(number:str):
         return user_id[0]
     except TypeError:
         return False
+    finally:
+        close()
 
 def get_phone(id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns False."""
@@ -79,6 +84,3 @@ def get_events():
     except:
         print("Error")
 
-
-# cur.close()
-# connection.close()
