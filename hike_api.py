@@ -1,4 +1,5 @@
 # TODO 1: Import Dependencies
+import os
 import logging, event_db
 from flask import Flask, request
 from sms import Sms
@@ -38,4 +39,4 @@ def receive_text():
         return "Error occurred", 500
 # TODO 3: Run Flask Application
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
