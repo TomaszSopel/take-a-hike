@@ -39,4 +39,4 @@ def receive_text():
         return "Error occurred", 500
 # TODO 3: Run Flask Application
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True)
