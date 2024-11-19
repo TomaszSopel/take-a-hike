@@ -4,7 +4,7 @@ import psycopg2
 def open_connection():
     return psycopg2.connect(
         host = os.environ.get('HOST'),
-        port = os.environ.get('PORT'),
+        port = os.environ.get('DB_PORT'),
         database = os.environ.get('DATABASE'),
         password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         user = os.environ.get('USER')
