@@ -8,7 +8,8 @@ def open_connection():
         # database = os.environ.get('DATABASE'),
         # password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         # user = os.environ.get('USER')
-        os.environ.get('DB_URL')
+        os.environ.get('DB_URL'),
+        sslmode='require'
     )
 
 def close_connection(connection, cursor=None):
