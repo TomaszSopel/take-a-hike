@@ -8,13 +8,11 @@ def open_connection():
         raise ValueError("No DB_URL found in environment variables.")
     
     return psycopg2.connect(
-        # host = os.environ.get('HOST'),
-        # port = os.environ.get('DB_PORT'),
-        # database = os.environ.get('DATABASE'),
-        # password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
-        # user = os.environ.get('USER')
-        db_url,
-        sslmode='require'
+        host = os.environ.get('HOST'),
+        port = os.environ.get('PORT'),
+        database = os.environ.get('DATABASE'),
+        password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
+        user = os.environ.get('USER')
     )
 
 def close_connection(connection, cursor=None):
