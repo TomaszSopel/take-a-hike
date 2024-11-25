@@ -110,5 +110,3 @@ def get_events():
         print("Error")
     finally:
         close_connection(connection, cur)
-
-print(get_events())
