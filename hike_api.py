@@ -1,7 +1,7 @@
 # TODO 1: Import Dependencies
 import os
 import logging, event_db
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from sms import Sms
 
 
@@ -21,7 +21,7 @@ def hello_world():
 @app.route("/database", methods = ['GET'])
 # TODO 4: Create a Root (an endpoint on the API that we can go to to get some kind of data)
 def database_test():
-    return jsonify(event_db.get_events())
+    return event_db.get_events()
 
 @app.route('/', methods = ['POST'])
 def receive_text():
