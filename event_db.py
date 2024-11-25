@@ -2,13 +2,18 @@ import os
 import psycopg2
 
 def open_connection():
+    db_url = os.environ.get('DB_URL')
+    
+    if not db_url:
+        raise ValueError("No DB_URL found in environment variables.")
+    
     return psycopg2.connect(
         # host = os.environ.get('HOST'),
         # port = os.environ.get('DB_PORT'),
         # database = os.environ.get('DATABASE'),
         # password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         # user = os.environ.get('USER')
-        os.environ.get('DB_URL'),
+        db_url,
         sslmode='require'
     )
 
