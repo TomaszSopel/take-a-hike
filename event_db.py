@@ -8,7 +8,6 @@ def open_connection():
         database = os.environ.get('DATABASE'),
         password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         user = os.environ.get('USER'),
-        # os.environ.get('DB_URL')
     )
 
 def close_connection(connection, cursor=None):
@@ -48,7 +47,7 @@ def get_phone(id:int):
 
 def log_user(number:str):
     """Inputs a phone number, if it already doesn't exist in the users table,
-    it will add it."""
+    it will add it. """
     if get_user(number) is False:
         try:
             connection = open_connection()
@@ -107,7 +106,7 @@ def get_events():
         cur = connection.cursor()
         cur.execute(f"SELECT event_code FROM events;")
         raw_events_list = cur.fetchall()
-        events_list = [str(item).replace(",", "").replace("(", "").replace(")", "") for item in raw_events_list] #Converts output into a list of strings
+        events_list = [str(item).replace(",", "").replace("(", "").replace(")", "").replace("'", "") for item in raw_events_list] #Converts output into a list of strings
         return (events_list)
     except:
         print("Error")
