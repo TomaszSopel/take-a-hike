@@ -32,7 +32,7 @@ def receive_text():
             
             messenger = Sms()
             messenger.send_message(f"Message sent from: {from_number}")
-            messenger.send_message(f"Message Body: {from_body}")
+            messenger.send_message(f"Message Body: {from_body.split()}")
             return "Message received successfully!", 200
     except Exception as e:
         logging.error(f"Error Message: {e}")
