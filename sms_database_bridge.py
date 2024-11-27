@@ -24,6 +24,3 @@ Checks to see if your phone number is a part of the users table, if not, it will
 Retreives the userID corresponding with the phone number
 signs up the phone number for the particular event"""
 
-
-text = Text_message_input('8609999999', "SIGNUP CHERRY")
-text.process_text()
