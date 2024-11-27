@@ -1,6 +1,6 @@
 # TODO 1: Import Dependencies
 import os
-import logging, event_db
+import logging, event_db, sms_database_bridge
 from flask import Flask, request
 from sms import Sms
 
@@ -27,12 +27,11 @@ def database_test():
 def receive_text():
     try:
         if request.method == 'POST':
-            from_number = request.form.get("From")
-            from_body = request.form.get("Body")
+            incoming_message = sms_database_bridge.Text_message_input(
+                phone_number=request.form.get("From"),
+                body=request.form.get("Body"))
+            incoming_message.process_text()
             
-            messenger = Sms()
-            messenger.send_message(f"Message sent from: {from_number}")
-            messenger.send_message(f"Message Body: {from_body}")
             return "Message received successfully!", 200
     except Exception as e:
         logging.error(f"Error Message: {e}")
