@@ -80,8 +80,13 @@ def sign_up(user_id:int, event_id:int):
     try:
         connection = open_connection()
         cur = connection.cursor()
-        cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
-        connection.commit()
+        check = cur.execute(f"SELECT * FROM user_event_signups WHERE user_id = {user_id} AND event_id = {event_id};")
+        check = cur.fetchone()
+        if check:
+            print("Entry already exists.")
+        else:
+            cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
+            connection.commit()
     except psycopg2.errors.ForeignKeyViolation:
         print("File not Found: You can control this error!!!")
     finally:
@@ -112,3 +117,5 @@ def get_events():
         print("Error")
     finally:
         close_connection(connection, cur)
+
+sign_up(6,1)
