@@ -117,5 +117,3 @@ def get_events():
         print("Error")
     finally:
         close_connection(connection, cur)
-
-sign_up(6,1)
