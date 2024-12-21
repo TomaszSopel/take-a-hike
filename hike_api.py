@@ -26,11 +26,23 @@ def receive_text():
                 phone_number=request.form.get("From"),
                 body=request.form.get("Body"))
             incoming_message.process_text()
-            
             return "Message received successfully!", 200
     except Exception as e:
         logging.error(f"Error Message: {e}")
         return "Error occurred", 500
+#Function testing receiving a text
+def test_receive_text():
+    with app.test_client() as client:
+        mock_data = {
+            "From": "+8601234567",
+            "Body": "Signup Cherry"
+        }
 
+        response = client.post('/receive_text', data=mock_data)
+        
+        print("Response status:", response.status_code)
+        print("Response data:", response.data.decode())
+
+test_receive_text()
 if __name__ == "__main__":
     app.run(debug=True)
