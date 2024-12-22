@@ -20,7 +20,7 @@ def close_connection(connection, cursor=None):
 
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
-    if they are in the users table, otherwise returns FALSE"""
+    if they are in the users table, otherwise returns 0"""
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -28,12 +28,12 @@ def get_user(number:str):
         user_id = cur.fetchone()
         return user_id[0]
     except TypeError:
-        return False
+        return 0
     finally:
         close_connection(connection, cur)
 
 def get_phone(id:int):
-    """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns False."""
+    """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns 0."""
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -41,14 +41,14 @@ def get_phone(id:int):
         id = cur.fetchone()
         return id[0]
     except TypeError:
-        return False
+        return 0
     finally:
         close_connection(connection, cur)
 
 def log_user(number:str):
     """Inputs a phone number, if it already doesn't exist in the users table,
     it will add it. """
-    if get_user(number) is False:
+    if get_user(number) == 0:
         try:
             connection = open_connection()
             cur = connection.cursor()
