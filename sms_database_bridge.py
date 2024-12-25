@@ -11,6 +11,7 @@ class Text_message_input:
             print(events_list)
             if self.body_list[1] in events_list:
                 event_db.log_user(self.phone_number)
+                print(f"phone number is {self.phone_number}")
                 user_id = event_db.get_user(self.phone_number)
                 print(f"user_id is {user_id}")
                 event_id = event_db.get_event_id(self.body_list[1])
