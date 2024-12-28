@@ -19,6 +19,7 @@ class Text_message_input:
                 # TODO: write a function that checks if the user is already signed up for an event
                 messenger = sms.Sms()
                 if event_db.sign_up(user_id=user_id, event_id=event_id) is None:
+                    # TODO: Send the following message using event name instead of event code.
                     messenger.send_message(f"You are already signed up for {self.body_list[1].capitalize()}!")
                 else:
                     messenger.send_message(f"Signup for {self.body_list[1].capitalize()} confirmed!")
