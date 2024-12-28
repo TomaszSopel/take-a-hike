@@ -17,10 +17,11 @@ class Text_message_input:
                 event_id = event_db.get_event_id(self.body_list[1])
                 print(f"event_id is {event_id}")
                 # TODO: write a function that checks if the user is already signed up for an event
-                event_db.sign_up(user_id=user_id, event_id=event_id)
-                # TEMP CODE TO CONFIRM sign-up (these texts can ONLY be sent to the twilio number atm.)
                 messenger = sms.Sms()
-                messenger.send_message(f"Signup for {self.body_list[1].capitalize()} confirmed!")
+                if event_db.sign_up(user_id=user_id, event_id=event_id) is None:
+                    messenger.send_message(f"You are already signed up for {self.body_list[1].capitalize()}!")
+                else:
+                    messenger.send_message(f"Signup for {self.body_list[1].capitalize()} confirmed!")
 
 """Signing up:Text Cherry to 860-XXX-XXXX -->
 Checks to see if your phone number is a part of the users table, 

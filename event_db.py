@@ -87,7 +87,8 @@ def sign_up(user_id:int, event_id:int):
         check = cur.execute(f"SELECT * FROM user_event_signups WHERE user_id = {user_id} AND event_id = {event_id};")
         check = cur.fetchone()
         if check:
-            print("Entry already exists.")
+            print("Entry already exists. Returning None")
+            return None
         else:
             cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
             connection.commit()
