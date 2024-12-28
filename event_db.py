@@ -127,5 +127,3 @@ def normalize_phone_number(phone_number:str):
         return phone_number[2:]
     else:
         return phone_number
-
-log_user("+12031111111")
