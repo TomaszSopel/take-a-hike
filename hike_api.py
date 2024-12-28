@@ -1,4 +1,3 @@
-import os
 import logging, event_db, sms_database_bridge
 from flask import Flask, request
 from sms import Sms
@@ -22,6 +21,8 @@ def database_test():
 def receive_text():
     try:
         if request.method == 'POST':
+            payload = request.form.to_dict()
+            print(f"Incoming Twilio Payload: {payload}")
             incoming_message = sms_database_bridge.Text_message_input(
                 phone_number=request.form.get("From"),
                 body=request.form.get("Body"))
