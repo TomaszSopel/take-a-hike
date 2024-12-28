@@ -22,13 +22,15 @@ def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns 0"""
     try:
+        number = normalize_phone_number(number)
         connection = open_connection()
         cur = connection.cursor()
         cur.execute(f"SELECT user_id FROM users WHERE phone_number = '{number}'")
         user_id = cur.fetchone()
+        print(f"user_id is {user_id[0]}")
         return user_id[0]
     except TypeError:
-        return 0
+        return None
     finally:
         close_connection(connection, cur)
 
@@ -48,8 +50,9 @@ def get_phone(id:int):
 def log_user(number:str):
     """Inputs a phone number, if it already doesn't exist in the users table,
     it will add it. """
-    if get_user(number) == 0:
+    if get_user(number) is None:
         try:
+            number = normalize_phone_number(number)
             connection = open_connection()
             cur = connection.cursor()
             cur.execute(f"INSERT INTO users (phone_number) VALUES ({number});")
@@ -58,7 +61,8 @@ def log_user(number:str):
         finally:
             close_connection(connection, cur)
     else:
-        pass
+        print("User already exists in users table.")
+        return None
 
 def get_event_id(code:str):
     """Inputs an event event code (str) and checks if the corresponding event 
@@ -117,3 +121,11 @@ def get_events():
         print("Error")
     finally:
         close_connection(connection, cur)
+
+def normalize_phone_number(phone_number:str):
+    if phone_number.startswith("+1"):
+        return phone_number[2:]
+    else:
+        return phone_number
+
+log_user("+12031111111")
