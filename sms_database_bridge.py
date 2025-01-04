@@ -16,10 +16,10 @@ class Text_message_input:
                 event_id = event_db.get_event_id(self.body_list[1])
                 # TODO: write a function that checks if the user is already signed up for an event
                 messenger = sms.Sms()
-                if event_db.sign_up(user_id=user_id, event_id=event_id) is True:
+                if event_db.sign_up(user_id=user_id, event_id=event_id) is None:
                     # TODO: Send the following message using event name instead of event code.
                     messenger.send_message(f"You are already signed up for {self.body_list[1].capitalize()}!")
-                elif event_db.sign_up(user_id=user_id, event_id=event_id) is None:
+                elif event_db.sign_up(user_id=user_id, event_id=event_id) is True:
                     messenger.send_message(f"Signup for {self.body_list[1].capitalize()} confirmed!") 
 """Signing up:Text Cherry to 860-XXX-XXXX -->
 Checks to see if your phone number is a part of the users table, 
