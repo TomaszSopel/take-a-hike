@@ -20,7 +20,7 @@ def close_connection(connection, cursor=None):
 
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
-    if they are in the users table, otherwise returns 0"""
+    if they are in the users table, otherwise returns None"""
     try:
         number = normalize_phone_number(number)
         connection = open_connection()
@@ -84,14 +84,18 @@ def sign_up(user_id:int, event_id:int):
     try:
         connection = open_connection()
         cur = connection.cursor()
+        print(f"Function: Sign_up(), user_id is {user_id} and event_id is {event_id}")
         check = cur.execute(f"SELECT * FROM user_event_signups WHERE user_id = {user_id} AND event_id = {event_id};")
         check = cur.fetchone()
-        if check:
+        print(f"sign_up() --> check is {check}")
+        if check is not None: #If a check exists, then it's already been entered on the user_event_signups table
             print("Entry already exists. Returning None")
             return None
         else:
             cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
             connection.commit()
+            print("entry logged")
+            return True
     except psycopg2.errors.ForeignKeyViolation:
         print("File not Found: You can control this error!!!")
     finally:
@@ -124,7 +128,9 @@ def get_events():
         close_connection(connection, cur)
 
 def normalize_phone_number(phone_number:str):
-    if phone_number.startswith("+1"):
-        return phone_number[2:]
+    phone_number = phone_number.strip()
+    if phone_number.startswith("+"):
+        return phone_number[1:]
     else:
         return phone_number
+
