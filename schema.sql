@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.19 (Ubuntu 12.19-1.pgdg22.04+1)
--- Dumped by pg_dump version 12.19 (Ubuntu 12.19-1.pgdg22.04+1)
+-- Dumped from database version 12.20 (Ubuntu 12.20-1.pgdg22.04+1)
+-- Dumped by pg_dump version 12.20 (Ubuntu 12.20-1.pgdg22.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -101,7 +101,8 @@ ALTER SEQUENCE public.user_event_signups_user_event_id_seq OWNED BY public.user_
 
 CREATE TABLE public.users (
     user_id integer NOT NULL,
-    phone_number character varying(15) NOT NULL
+    phone_number character varying(15) NOT NULL,
+    is_admin boolean DEFAULT false
 );
 
 
@@ -148,56 +149,6 @@ ALTER TABLE ONLY public.user_event_signups ALTER COLUMN user_event_id SET DEFAUL
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
-
-
---
--- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.events (event_id, event_code, event_date, event_description, event_location, event_name) FROM stdin;
-1	cherry	2024-08-08	A walk up to Cherry Hill with a picnic at the top	White Memorial campgrounds	\N
-2	pine_mountain	2024-09-15	A hike up Pine Mountain with scenic views.	Pine Mountain Trailhead	\N
-\.
-
-
---
--- Data for Name: user_event_signups; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.user_event_signups (user_event_id, user_id, event_id, signup_date, attendance_confirmed) FROM stdin;
-\.
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.users (user_id, phone_number) FROM stdin;
-3	2345678901
-4	1234567890
-5	9876543210
-\.
-
-
---
--- Name: events_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
---
-
-SELECT pg_catalog.setval('public.events_event_id_seq', 2, true);
-
-
---
--- Name: user_event_signups_user_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
---
-
-SELECT pg_catalog.setval('public.user_event_signups_user_event_id_seq', 1, false);
-
-
---
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: gitpod
---
-
-SELECT pg_catalog.setval('public.users_user_id_seq', 5, true);
 
 
 --
