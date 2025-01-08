@@ -134,3 +134,9 @@ def normalize_phone_number(phone_number:str):
     else:
         return phone_number
 
+"""
+def add_event(event_name, date, location, code, description)
+    This will implement the addition of an event to the events table via SMS, 
+    likely through a multi-SMS chain implemented via the sms_database bridge, 
+    which data will then get fed into this function.
+"""
