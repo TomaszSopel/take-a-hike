@@ -21,11 +21,12 @@ def database_test():
 def receive_text():
     try:
         if request.method == 'POST':
-            payload = request.form.to_dict()
+            payload = request.get_json()
             print(f"Incoming Twilio Payload: {payload}")
             incoming_message = sms_database_bridge.Text_message_input(
-                phone_number=request.form.get("From"),
-                body=request.form.get("Body"))
+                phone_number=payload["From"],
+                body=payload["Body"]
+            )
             incoming_message.process_text()
             return "Message received successfully!", 200
     except Exception as e:
