@@ -13,4 +13,14 @@ def validate_admin(phone_number:str):
     except TypeError:
         return None
 
+def create_admin(phone_number:str):
+    """Changes the is_admin value for the user provided from False to True. If no such user exists, a ValueError"""
+    connection = event_db.open_connection()
+    cur = connection.cursor()
+    try:
+        cur.execute(f"UPDATE users SET is_admin = TRUE WHERE phone_number = '{phone_number}';")
+        return (f"{phone_number} now has admin priviledges.")
+    except TypeError:
+        return None
 
+print(create_admin('8883331234'))
