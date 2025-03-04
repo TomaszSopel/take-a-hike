@@ -29,7 +29,7 @@ class Text_message_input:
                         )
         elif "add" in self.body_list:
             if "admin" in self.body_list:
-                print("trigger me timbers!")
+                print(f"{self.phone_number} is triggering me timbers!")
 """Signing up:Text Cherry to 860-XXX-XXXX -->
 Checks to see if your phone number is a part of the users table, 
 if not, it will add it -->
