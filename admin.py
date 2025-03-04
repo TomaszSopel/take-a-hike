@@ -1,7 +1,7 @@
 import event_db
 """"This will handle all the admin related functions"""
 
-def validate_admin(phone_number:str):
+def check_admin(phone_number:str):
     """Takes a phone number in the form of a string and returns the specific users True or False value for is_admin.
     If the number provided is not found in the users table, returns None."""
     connection = event_db.open_connection()
@@ -23,4 +23,4 @@ def create_admin(phone_number:str):
     except TypeError:
         return None
 
-print(create_admin('8883331234'))
+# def create_event():

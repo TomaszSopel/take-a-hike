@@ -1,4 +1,4 @@
-import event_db, sms
+import event_db, sms, admin
 class Text_message_input:
     """Creates Text_message_input object that can send messages via Twilio API"""
     def __init__(self, phone_number, body:str):
@@ -27,9 +27,9 @@ class Text_message_input:
                     messenger.send_message(
                         f"Signup for {self.body_list[1].capitalize()} confirmed!"
                         )
-        elif "add" in self.body_list:
+        elif "add" in self.body_list and admin.check_admin(self.phone_number) is True:
             if "admin" in self.body_list:
-                print(f"{self.phone_number} is triggering me timbers!")
+                print(f"{self.phone_number} is triggering me timbers! Their admin status is {admin.check_admin(self.phone_number)}")
 """Signing up:Text Cherry to 860-XXX-XXXX -->
 Checks to see if your phone number is a part of the users table, 
 if not, it will add it -->
