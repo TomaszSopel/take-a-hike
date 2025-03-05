@@ -10,6 +10,7 @@ class Sms:
         self.client = Client(self.account_sid, self.auth_token)
 # TODO: Modify the send message function to require a phone number as an argument (otherwise all followup texts following a signup will be sent to the twilio number)
     def send_message(self, msg):
+        #TODO: The send_message function can only send messages to the hard coded phone number, add a parameter in the initialization of the Sms object to include the senders phone number such that they can get the response sent to their number. 
         self.client.messages.create(
             from_=os.environ.get('TWILIO_NUMBER'),
             body=msg,
