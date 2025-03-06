@@ -1,4 +1,34 @@
 import event_db, sms, admin
+
+class SignupCommand:
+    """Handles the signup command."""
+    def __init__(self, phone_number, event_code):
+        self.phone_number = phone_number
+        self.event_code = event_code
+
+commands = {
+    "signup": SignupCommand,
+}
+
+def process_sms(phone_number, message_body):
+    """Processes the incoming text and executes the related commands on the database."""
+    message_body_list = message_body.strip().lower().split()
+    if not message_body:
+        return "Empty Message Body"
+    
+    command_keyword = message_body_list[0]
+    command_args = message_body_list[1]
+
+    command_name = commands.get(command_keyword)
+
+    if command_name:
+        try:
+            if command_name == "signup":
+                pass # Continue here
+        except:
+            print("Error in signup")
+            return("Error in signup")
+
 class Text_message_input:
     """Creates Text_message_input object that can send messages via Twilio API"""
     def __init__(self, phone_number, body:str): # Initialization requires the phone number and message body from incoming text
