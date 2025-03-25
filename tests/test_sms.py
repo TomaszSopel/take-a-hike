@@ -9,7 +9,7 @@ class TestSms(unittest.TestCase):
     def test_send_message(self, mock_client):
         sms = Sms()
 
-        sms.send_message("test")
+        sms.send_sms(to_number="...", body="...")
 
         mock_client.return_value.messages.create.assert_called_once_with(
             from_=os.environ.get('TWILIO_NUMBER'),
