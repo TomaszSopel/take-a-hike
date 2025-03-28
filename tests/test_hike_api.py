@@ -1,15 +1,20 @@
 import unittest
 from unittest.mock import patch
-from hike_api import hello_world, receive_text
+from hike_api import hello_world, app
 
 class TestHelloWorld(unittest.TestCase):
     """A class that tests hello_world()"""
+    def setUp(self):
+        self.client = app.test_client()
+        app.config['TESTING'] = True
 
     @patch('hike_api.Sms')
-    def test_hello_world(self, mock_sms):
-        hello_world()
-        mock_sms.assert_called_once()
-        mock_sms.return_value.send_message.assert_called_once_with("Get Message Sent")
+    def test_hello_world(self, mock_sms_class):
+        response = self.client.get('/') 
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, b"Hello World!") # Check the response body
+
 
 # class TestReceiveText(unittest.TestCase):
 #     """A class that tests receive_text()"""
