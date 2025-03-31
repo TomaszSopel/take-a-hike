@@ -23,21 +23,10 @@ if account_sid and auth_token and twilio_number:
 else:
     logging.warning("Twilio credentials or phone number not set in environment variables.")
 
+@app.route("/database", methods = ['GET'])
 
-# @app.route("/", methods = ['GET'])
-
-# def hello_world():
-#     phone_number = request.form.get("From") # This object uses the phone number and message body from the incoming text as arguments during initalization
-#     message_body = request.form.get("Body")
-#     messenger = Sms()
-#     messenger.send_sms(to_number=phone_number, body=message_body)
-#     logging.info("Hello world started")
-#     return "Hello World!"
-
-# @app.route("/database", methods = ['GET'])
-
-# def database_test():
-#     return event_db.get_events()
+def database_test():
+    return event_db.get_events()
 
 @app.route('/', methods = ['POST'])
 def receive_text():
