@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import logging
 
 def open_connection():
     return psycopg2.connect(
@@ -14,7 +15,7 @@ def close_connection(connection, cursor=None):
     if cursor:
         cursor.close()
     if connection:
-        cursor.connection.close()
+        connection.close()
 
 #TODO 1: write code that says, "if no password treat it as an empty string"
 
@@ -133,6 +134,43 @@ def normalize_phone_number(phone_number:str):
         return phone_number[1:]
     else:
         return phone_number
+
+def get_event_by_code(event_code:str) -> dict | None:
+    """Takes the event code for a particular event, and returns the event_id, event_name, event_date, event_description, and event_location
+    that corresponds with the event_code; returned as a dictionary."""
+    
+    connection = None
+    cursor = None
+
+    sql = """
+        SELECT event_id, event_name, event_code, event_date, event_description, event_location
+        FROM events
+        WHERE event_code = %s;
+    """
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (event_code.lower(),))
+        event_info = cur.fetchone()
+        
+        if event_info:
+            event_dict = {
+                'event_id': event_info[0],
+                'event_name': event_info[1],
+                'event_code': event_info[2],
+                'event_date': event_info[3],
+                'event_description': event_info[4],
+                'event_location': event_info[5]
+            }
+            return event_dict
+        else:
+            return None
+
+    except Exception as e:
+        logging.error(f"Error in get_event_by_code: {e}")
+        return None
+    finally:
+        close_connection(connection, cur)
 
 """
 def add_event(event_name, date, location, code, description)
