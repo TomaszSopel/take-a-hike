@@ -5,7 +5,7 @@ from twilio.rest import Client
 
 app = Flask(__name__)
 
-account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+account_sid = os.environ.get("TWILIO_SID")
 auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
 twilio_number = os.environ.get("TWILIO_NUMBER")
 port = int(os.environ.get("PORT", 5000)) # Default to 5000
