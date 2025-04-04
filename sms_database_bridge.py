@@ -7,21 +7,25 @@ class SignupCommand:
         self.event_code = event_code
 
     def execute(self):
-        events_list = event_db.get_events() # Gets a list of all events documented in the database
-        print(f"Execute() triggered, but before if statement, events_list is {events_list}")
-        if self.event_code in events_list: # If the second word of the incoming text is found in the list of events...
-            event_db.log_user(self.phone_number) # Logs the user into the users table if they're not already registered as a user
-            user_id = event_db.get_user(self.phone_number) # Now that they're in the users table, get their corresponding user_id
-            print(f"Process_text() user phone number is {self.phone_number} and user_id is {user_id}")
-            event_id = event_db.get_event_id(self.event_code) # Get the event_id that corresponds with the event they want to sign up for.
-            # TODO: write a function that checks if the user is already signed up for an event
-            result = event_db.sign_up(user_id=user_id, event_id=event_id)
-            print(result)
-            if result is None: # If they're already signed up, result = None
-                # TODO: Send the following message using event name instead of event code.
-                return f"You are already signed up for {self.event_code.capitalize()}!"        
-            elif result is True: # The signup function returns True if the user managed to sign up
-                return f"Signup for {self.event_code.capitalize()} confirmed!"
+        try:
+            events_list = event_db.get_events() # Gets a list of all events documented in the database
+            print(f"Execute() triggered, but before if statement, events_list is {events_list}")
+            if self.event_code in events_list: # If the second word of the incoming text is found in the list of events...
+                event_db.log_user(self.phone_number) # Logs the user into the users table if they're not already registered as a user
+                user_id = event_db.get_user(self.phone_number) # Now that they're in the users table, get their corresponding user_id
+                print(f"Process_text() user phone number is {self.phone_number} and user_id is {user_id}")
+                event_id = event_db.get_event_id(self.event_code) # Get the event_id that corresponds with the event they want to sign up for.
+                # TODO: write a function that checks if the user is already signed up for an event
+                result = event_db.sign_up(user_id=user_id, event_id=event_id)
+                print(result)
+                if result is None: # If they're already signed up, result = None
+                    # TODO: Send the following message using event name instead of event code.
+                    return f"You are already signed up for {self.event_code.capitalize()}!"        
+                elif result is True: # The signup function returns True if the user managed to sign up
+                    return f"Signup for {self.event_code.capitalize()} confirmed!"
+        except Exception as error:
+            print(f"Error in SignupCommand.execute: {error}")
+            return "Error (Signup)"
 
 commands = {
     "signup": SignupCommand,
