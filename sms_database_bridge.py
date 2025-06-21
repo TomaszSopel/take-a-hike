@@ -8,21 +8,26 @@ class SignupCommand:
 
     def execute(self):
         try:
-            events_list = event_db.get_events() # Gets a list of all events documented in the database
-            print(f"Execute() triggered, but before if statement, events_list is {events_list}")
-            if self.event_code in events_list: # If the second word of the incoming text is found in the list of events...
-                event_db.log_user(self.phone_number) # Logs the user into the users table if they're not already registered as a user
-                user_id = event_db.get_user(self.phone_number) # Now that they're in the users table, get their corresponding user_id
-                print(f"Process_text() user phone number is {self.phone_number} and user_id is {user_id}")
-                event_id = event_db.get_event_id(self.event_code) # Get the event_id that corresponds with the event they want to sign up for.
-                # TODO: write a function that checks if the user is already signed up for an event
-                result = event_db.sign_up(user_id=user_id, event_id=event_id)
-                print(result)
-                if result is None: # If they're already signed up, result = None
-                    # TODO: Send the following message using event name instead of event code.
-                    return f"You are already signed up for {self.event_code.capitalize()}!"        
-                elif result is True: # The signup function returns True if the user managed to sign up
-                    return f"Signup for {self.event_code.capitalize()} confirmed!"
+            event = event_db.get_event_by_code(self.event_code) # Retrieves all relevant data for the event based on the event code
+            
+            if not event: # Returns an error message if the event code is not found
+                return f"Event '{self.event_code}' not found. Please check the code and try again."
+
+            user_id = event_db.get_user(self.phone_number)
+
+            if not user_id:
+                event_db.log_user(self.phone_number) #If not found, log the user
+                user_id = event_db.get_user(self.phone_number) # Retrieve the user id after logging the user
+                if not user_id:
+                    return "Error: Unable to find or create user_ID, please contact Admin."            
+            result = event_db.sign_up(user_id=user_id, event_id=event['event_id'])
+
+            if result is None:
+                return f"You are already signed up for {event['event_name']}."
+            elif result is True:
+                return f"Signup for {event['event_name']} confirmed!"
+            else: # Handles if sign_up returns False (e.g., from an error)
+                return "Signup failed due to a database issue."
         except Exception as error:
             print(f"Error in SignupCommand.execute: {error}")
             return "Error (Signup)"
