@@ -27,8 +27,35 @@ class SignupCommand:
             print(f"Error in SignupCommand.execute: {error}")
             return "Error (Signup)"
 
+class CancelCommand:
+    """Handles the cancel command."""
+    def __init__(self, phone_number, event_code):
+        self.phone_number = phone_number
+        self.event_code = event_code
+
+    def execute(self):
+        """Executes the cancel command, removing the user from the event registration."""
+        try:
+            event = event_db.get_event_by_code(self.event_code)
+            if not event:
+                return f"Event {self.event_code} not found."
+            
+            user_id = event_db.get_user(self.phone_number)
+            if not user_id:
+                return f"You were not signed up for {event['event_name']}."
+            
+            was_cancelled = event_db.cancel_signup(user_id, event['event_id'])
+            if was_cancelled:
+                return f"Your signup for {event['event_name']} has been cancelled."
+            else:
+                return f"You were not signed up for {event['event_name']}."
+        except Exception as error:
+            print(f"Error in CancelCommand.execute: {error}")
+            return "An error occured while trying to cancel your signup."
+
 commands = {
     "signup": SignupCommand,
+    "cancel": CancelCommand,
 }
 
 def process_sms(phone_number, message_body):
@@ -38,7 +65,7 @@ def process_sms(phone_number, message_body):
         return "Empty Message Body"
     
     command_keyword = message_body_list[0] #Command keyword == *signup* cherry, triggers what function is executed
-    command_args = message_body_list[1] # Command_args == signup *cherry*, provides arguments for specific function
+    command_args = message_body_list[1:] # Command_args == signup *cherry*, provides arguments for specific function
 
     command_name = commands.get(command_keyword)
 
