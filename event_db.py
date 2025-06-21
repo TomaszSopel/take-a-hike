@@ -172,6 +172,33 @@ def get_event_by_code(event_code:str) -> dict | None:
     finally:
         close_connection(connection, cur)
 
+def cancel_signup(user_id:int, event_id:int):
+    """Cancels a user's signup for an event by removing the entry from the user_event_signups table.
+    Returns True if the cancellation was successful, False otherwise."""
+    connection = None
+    cur = None
+
+    sql = "DELETE FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
+    
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+
+        cur.execute(sql, (user_id, event_id))
+
+        rows_deleted = cur.rowcount
+
+        connection.commit()
+
+        # Return True if a row was deleted, False otherwise.
+        return rows_deleted > 0
+
+    except psycopg2.Error as e:
+        logging.error(f"Database error in cancel_signup: {e}")
+        return False
+    finally:
+        close_connection(connection, cur)
+
 """
 def add_event(event_name, date, location, code, description)
     This will implement the addition of an event to the events table via SMS, 
