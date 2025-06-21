@@ -58,10 +58,24 @@ class CancelCommand:
             print(f"Error in CancelCommand.execute: {error}")
             return "An error occured while trying to cancel your signup."
 
+
+"""
+Test curl command: 
+curl -X POST http://127.0.0.1:5000/ -H "Content-Type: application/x-www-form-urlencoded" -d "Body=Signup Cherry" -d "From=18609673158"
+"""
+
+
+# Dictionary of all commands
 commands = {
     "signup": SignupCommand,
     "cancel": CancelCommand,
 }
+
+# List of one argument commands
+ONE_ARG_COMMANDS = [
+    "signup",
+    "cancel",
+]
 
 def process_sms(phone_number, message_body):
     """Processes the incoming text and executes the related commands on the database."""
@@ -76,15 +90,22 @@ def process_sms(phone_number, message_body):
 
     if command_name:
         try:
-            if command_keyword == "signup" and command_args:
-                command_response = command_name(phone_number, command_args)
-                return command_response.execute()
+            if command_keyword in ONE_ARG_COMMANDS: # Use the list of keywords
+        
+                if not command_args:# Check if the user actually provided an argument
+                    return f"The '{command_keyword}' command requires an event code."
+        
+                command_instance = command_name(phone_number, command_args[0]) # Create the command instance (works for signup, cancel, etc.)
+                return command_instance.execute()
+    
+                # Add other 'elif' blocks here for commands with different argument numbers here!
+        
+            else:
+                # This case is for commands that are in the dictionary but not in a group
+                return "Command not configured correctly."
+        
         except Exception as e:
-            print(f"Error in signup: {e}")
-            return(f"Error in signup: {e}")
-"""
-Test curl command: 
-curl -X POST http://127.0.0.1:5000/ -H "Content-Type: application/x-www-form-urlencoded" -d "Body=Signup Cherry" -d "From=18609673158"
-"""
-
-
+            print(f"Error in process_sms: {e}")
+            return "An error occurred processing your request."
+    else:
+        return f"Unknown command: {command_keyword}."
