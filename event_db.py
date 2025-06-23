@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import logging
+import re
 
 def open_connection():
     return psycopg2.connect(
@@ -128,12 +129,25 @@ def get_events():
     finally:
         close_connection(connection, cur)
 
-def normalize_phone_number(phone_number:str):
-    phone_number = phone_number.strip()
-    if phone_number.startswith("+"):
-        return phone_number[1:]
+def normalize_phone_number(phone_number:str) -> str | None:
+    """Takes a phone number in the form of a string and normalizes it to a E.164 format."""
+    
+    if not phone_number:
+        return None
+    
+    phone_number = re.sub(r'\D', '', phone_number)  # Remove all non-digit characters from phone_number
+    
+    if len(phone_number) == 10:  # If the phone number is 10 digits long, assume it's a US number
+        normalized_number = f"1{phone_number}"  # Add country code for US
+
+    elif len(phone_number) == 11 and phone_number.startswith('1'): 
+        # If the phone number is 11 digits long and starts with '1', assume it's a US number
+        normalized_number = phone_number # Already in E.164 format
     else:
-        return phone_number
+        return None
+    
+    return f"+{normalized_number}"  # Ensure it starts with a '+' for E.164 format
+
 
 def get_event_by_code(event_code:str) -> dict | None:
     """Takes the event code for a particular event, and returns the event_id, event_name, event_date, event_description, and event_location
