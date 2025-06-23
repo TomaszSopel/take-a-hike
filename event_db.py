@@ -23,15 +23,22 @@ def close_connection(connection, cursor=None):
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns None"""
+    number = normalize_phone_number(number)
+
+    sql = "SELECT user_id FROM users WHERE phone_number = %s;"
     try:
-        number = normalize_phone_number(number)
         connection = open_connection()
         cur = connection.cursor()
-        cur.execute(f"SELECT user_id FROM users WHERE phone_number = '{number}'")
+        cur.execute(sql, (number,))
         user_id = cur.fetchone()
-        print(f"user_id is {user_id[0]}")
-        return user_id[0]
-    except TypeError:
+        if user_id:
+            print(f"user_id is {user_id[0]}")
+            return user_id[0]
+        else:
+            print("get_user failed: User not found in users table.")
+            return None
+    except psycopg2.Error as e:
+        logging.error(f"DB Error in get_user: {e}")
         return None
     finally:
         close_connection(connection, cur)
