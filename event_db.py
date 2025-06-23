@@ -24,7 +24,7 @@ def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns None"""
     number = normalize_phone_number(number)
-
+    connection, cur = None, None
     sql = "SELECT user_id FROM users WHERE phone_number = %s;"
     try:
         connection = open_connection()
@@ -45,6 +45,7 @@ def get_user(number:str):
 
 def get_phone(id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns 0."""
+    connection, cur = None, None
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -56,26 +57,28 @@ def get_phone(id:int):
     finally:
         close_connection(connection, cur)
 
-def log_user(number:str):
-    """Inputs a phone number, if it already doesn't exist in the users table,
-    it will add it. """
-    if get_user(number) is None:
-        try:
-            number = normalize_phone_number(number)
-            connection = open_connection()
-            cur = connection.cursor()
-            cur.execute(f"INSERT INTO users (phone_number) VALUES ({number});")
-            connection.commit()
-            print(f"New user added, phone number: {number}")
-        finally:
-            close_connection(connection, cur)
-    else:
-        print("User already exists in users table.")
-        return None
+def log_user(phone_number: str):
+    """Takes a phone number (str) and logs it into the users table."""
+    connection, cur = None, None
+    normalized_number = normalize_phone_number(phone_number)
+    if not normalized_number:
+        return
+
+    sql = "INSERT INTO users (phone_number) VALUES (%s) ON CONFLICT (phone_number) DO NOTHING;"
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (normalized_number,))
+        connection.commit()
+    except psycopg2.Error as e:
+        logging.error(f"DB Error in log_user: {e}")
+    finally:
+        close_connection(connection, cur)
 
 def get_event_id(code:str):
     """Inputs an event event code (str) and checks if the corresponding event 
     exists in the events table, returning event id (int), otherwise False"""
+    connection, cur = None, None
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -90,6 +93,7 @@ def get_event_id(code:str):
 # TODO 1: Modify sign_up() to refuse duplicate signups
 def sign_up(user_id:int, event_id:int):
     """Inputs user id and event id and logs them into the user_events_signup table."""
+    connection, cur = None, None
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -112,6 +116,7 @@ def sign_up(user_id:int, event_id:int):
 
 def event_get_numbers(event_id:int):
     """Inputs an event code (int) and returns all phone numbers signed up for the event (list[int])"""
+    connection, cur = None, None
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -124,6 +129,7 @@ def event_get_numbers(event_id:int):
 
 def get_events():
     """Returns all events currently registered"""
+    connection, cur = None, None
     try:
         connection = open_connection()
         cur = connection.cursor()
@@ -138,7 +144,6 @@ def get_events():
 
 def normalize_phone_number(phone_number:str) -> str | None:
     """Takes a phone number in the form of a string and normalizes it to a E.164 format."""
-    
     if not phone_number:
         return None
     
@@ -158,11 +163,8 @@ def normalize_phone_number(phone_number:str) -> str | None:
 
 def get_event_by_code(event_code:str) -> dict | None:
     """Takes the event code for a particular event, and returns the event_id, event_name, event_date, event_description, and event_location
-    that corresponds with the event_code; returned as a dictionary."""
-    
-    connection = None
-    cursor = None
-
+    that corresponds with the event_code; returned as a dictionary."""   
+    connection, cur = None, None
     sql = """
         SELECT event_id, event_name, event_code, event_date, event_description, event_location
         FROM events
@@ -196,9 +198,7 @@ def get_event_by_code(event_code:str) -> dict | None:
 def cancel_signup(user_id:int, event_id:int):
     """Cancels a user's signup for an event by removing the entry from the user_event_signups table.
     Returns True if the cancellation was successful, False otherwise."""
-    connection = None
-    cur = None
-
+    connection, cur = None, None
     sql = "DELETE FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
     
     try:
