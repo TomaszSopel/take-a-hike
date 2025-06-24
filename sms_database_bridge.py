@@ -59,6 +59,34 @@ class CancelCommand:
             return "An error occured while trying to cancel your signup."
 
 
+class AddAdminCommand:
+    """Handles the add admin command."""
+    def __init__(self, phone_number, args_list):
+        self.requesting_phone_number = phone_number
+        self.target_phone_number = args_list[0] if args_list else None
+        
+    def execute(self):
+        """Executes the add admin command, which is only accessible by other admins, promoting a user to admin."""
+        try:
+            if not admin.check_admin(self.requesting_phone_number):
+                return "Operation Failed: You are not authorized to perform this action."
+            
+            if not self.target_phone_number:
+                return "Operation Failed: Command must be structured as: add admin [target_phone_number]"
+            
+            event_db.log_user(self.target_phone_number)
+            set_admin_return = admin.set_admin_status(self.target_phone_number, True)
+
+            if set_admin_return:
+                return f"Success! {self.target_phone_number} has been granted admin privileges!"
+            else:
+                return f"Error: Could not find or update user {self.target_phone_number}"
+            
+        except Exception as error:
+            print(f"Error in AddAdminCommand.execute: {error}")
+            return "An error occured while trying to assign a new admin."
+
+
 """
 Test curl command: 
 curl -X POST http://127.0.0.1:5000/ -H "Content-Type: application/x-www-form-urlencoded" -d "Body=Signup Cherry" -d "From=18609673158"
