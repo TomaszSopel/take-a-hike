@@ -64,7 +64,7 @@ def log_user(phone_number: str):
     normalized_number = normalize_phone_number(phone_number)
     if not normalized_number:
         return
-
+    print(f"--- LOG_USER: Attempting to INSERT or IGNORE user '{normalized_number}' ---")
     sql = "INSERT INTO users (phone_number) VALUES (%s) ON CONFLICT (phone_number) DO NOTHING;"
     try:
         connection = open_connection()

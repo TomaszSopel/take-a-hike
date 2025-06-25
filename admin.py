@@ -40,7 +40,7 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
     normalized_phone_number = event_db.normalize_phone_number(phone_number)
     if not normalized_phone_number:
         return False
-    
+    print(f"--- SET_ADMIN_STATUS: Attempting to UPDATE user '{normalized_phone_number}' ---")
     query = "UPDATE users SET is_admin = %s WHERE phone_number = %s"
     
     try:

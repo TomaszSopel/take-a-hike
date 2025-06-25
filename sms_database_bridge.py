@@ -73,7 +73,8 @@ class AddAdminCommand:
             
             if not self.target_phone_number:
                 return "Operation Failed: Command must be structured as: add admin [target_phone_number]"
-            
+            print(f"--- ADD_ADMIN_CMD: Target number is '{self.target_phone_number}' ---")
+
             event_db.log_user(self.target_phone_number)
             set_admin_return = admin.set_admin_status(self.target_phone_number, True)
 
