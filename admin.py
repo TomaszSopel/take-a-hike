@@ -55,5 +55,6 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
     finally:
         event_db.close_connection(connection, cur)
 
-
+def get_headcount(event_code:str) -> int:
+    """Admin Command. Returns the corresponding """
 # def create_event():

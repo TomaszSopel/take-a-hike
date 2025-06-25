@@ -60,6 +60,7 @@ def get_phone(id:int):
 def log_user(phone_number: str):
     """Takes a phone number (str) and logs it into the users table."""
     connection, cur = None, None
+
     normalized_number = normalize_phone_number(phone_number)
     if not normalized_number:
         return
