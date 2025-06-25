@@ -86,23 +86,18 @@ class AddAdminCommand:
             print(f"Error in AddAdminCommand.execute: {error}")
             return "An error occured while trying to assign a new admin."
 
-
-"""
-Test curl command: 
-curl -X POST http://127.0.0.1:5000/ -H "Content-Type: application/x-www-form-urlencoded" -d "Body=Signup Cherry" -d "From=18609673158"
-"""
-
-
 # Dictionary of all commands
 commands = {
     "signup": SignupCommand,
     "cancel": CancelCommand,
+    "add admin": AddAdminCommand,
 }
 
 # List of one argument commands
 ONE_ARG_COMMANDS = [
     "signup",
     "cancel",
+    "add admin",
 ]
 
 def process_sms(phone_number, message_body):
@@ -112,10 +107,15 @@ def process_sms(phone_number, message_body):
         return "Empty Message Body"
     
     command_keyword = message_body_list[0] #Command keyword == *signup* cherry, triggers what function is executed
+
+    if command_keyword == "add" and len(message_body_list) > 1 and message_body_list[1] == "admin":
+        command_keyword = "add admin"
+        message_body_list = [command_keyword] + message_body_list[2:]
+    
     command_args = message_body_list[1:] # Command_args == signup *cherry*, provides arguments for specific function
 
     command_name = commands.get(command_keyword)
-
+    
     if command_name:
         try:
             if command_keyword in ONE_ARG_COMMANDS: # Use the list of keywords
@@ -127,7 +127,6 @@ def process_sms(phone_number, message_body):
                 return command_instance.execute()
     
                 # Add other 'elif' blocks here for commands with different argument numbers here!
-        
             else:
                 # This case is for commands that are in the dictionary but not in a group
                 return "Command not configured correctly."
