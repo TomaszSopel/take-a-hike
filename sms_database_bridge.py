@@ -4,7 +4,7 @@ class SignupCommand:
     """Handles the signup command."""
     def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = event_code
+        self.event_code = event_code[0] if event_code else None
 
     def execute(self):
         try:
@@ -36,7 +36,7 @@ class CancelCommand:
     """Handles the cancel command."""
     def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = event_code
+        self.event_code = event_code[0] if event_code else None
 
     def execute(self):
         """Executes the cancel command, removing the user from the event registration."""
@@ -73,7 +73,7 @@ class AddAdminCommand:
             
             if not self.target_phone_number:
                 return "Operation Failed: Command must be structured as: add admin [target_phone_number]"
-            print(f"--- ADD_ADMIN_CMD: Target number is '{self.target_phone_number}' ---")
+
 
             event_db.log_user(self.target_phone_number)
             set_admin_return = admin.set_admin_status(self.target_phone_number, True)
@@ -124,7 +124,7 @@ def process_sms(phone_number, message_body):
                 if not command_args:# Check if the user actually provided an argument
                     return f"The '{command_keyword}' command requires an event code."
         
-                command_instance = command_name(phone_number, command_args[0]) # Create the command instance (works for signup, cancel, etc.)
+                command_instance = command_name(phone_number, command_args) # Create the command instance (works for signup, cancel, etc.)
                 return command_instance.execute()
     
                 # Add other 'elif' blocks here for commands with different argument numbers here!
