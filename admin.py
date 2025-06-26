@@ -55,6 +55,26 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
     finally:
         event_db.close_connection(connection, cur)
 
-def get_headcount(event_code:str) -> int:
-    """Admin Command. Returns the corresponding """
-# def create_event():
+def get_headcount(event_code:str) -> int | None:
+    """Admin Function: Inputs an event code and outputs number of signups for that event."""
+    connection, cur = None, None
+
+    event = event_db.get_event_by_code(event_code)
+
+    if not event:
+        return None #If no event exists with the corresponding event code, return None
+    
+    sql = "SELECT COUNT(*) FROM user_event_signups WHERE event_id = %s;"
+
+    try:
+        connection = event_db.open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (event['event_id'],))
+
+        count = cur.fetchone()[0]
+        return count
+    except psycopg2.Error as e:
+        logging.error(f"DB Error in get_headcount: {e}")
+        return None
+    finally:
+        event_db.close_connection(connection, cur)
