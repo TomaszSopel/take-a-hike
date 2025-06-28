@@ -114,6 +114,7 @@ commands = {
     "signup": SignupCommand,
     "cancel": CancelCommand,
     "add admin": AddAdminCommand,
+    "attendance": HeadCountCommand,
 }
 
 # List of one argument commands
@@ -121,6 +122,7 @@ ONE_ARG_COMMANDS = [
     "signup",
     "cancel",
     "add admin",
+    "attendance",
 ]
 
 def process_sms(phone_number, message_body):
