@@ -87,6 +87,28 @@ class AddAdminCommand:
             print(f"Error in AddAdminCommand.execute: {error}")
             return "An error occured while trying to assign a new admin."
 
+class HeadCountCommand:
+    """Executes the get_headcount admin command."""
+    def __init__(self, phone_number, args_list):
+        self.phone_number = phone_number
+        self.event_code = args_list[0] if args_list else None
+
+    def execute(self):
+        if not admin.check_admin(self.phone_number):
+            return "Access Denied. This command is for admins only."
+        
+        if not self.event_code:
+            return "Usage Error: headcount [event code]"
+
+        event = event_db.get_event_by_code(self.event_code)
+
+        if not event:
+            return f"Event '{self.event_code}' not found."
+        
+        count = admin.get_headcount(self.event_code)
+
+        return f"There are {count} signups for {event['event_name']}"
+
 # Dictionary of all commands
 commands = {
     "signup": SignupCommand,
