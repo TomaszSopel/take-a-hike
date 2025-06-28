@@ -2,9 +2,9 @@ import event_db, admin
 
 class SignupCommand:
     """Handles the signup command."""
-    def __init__(self, phone_number, event_code):
+    def __init__(self, phone_number, args_list):
         self.phone_number = phone_number
-        self.event_code = event_code[0] if event_code else None
+        self.event_code = args_list[0] if args_list else None
 
     def execute(self):
         try:
@@ -34,9 +34,9 @@ class SignupCommand:
 
 class CancelCommand:
     """Handles the cancel command."""
-    def __init__(self, phone_number, event_code):
+    def __init__(self, phone_number, args_list):
         self.phone_number = phone_number
-        self.event_code = event_code[0] if event_code else None
+        self.event_code = args_list[0] if args_list else None
 
     def execute(self):
         """Executes the cancel command, removing the user from the event registration."""
