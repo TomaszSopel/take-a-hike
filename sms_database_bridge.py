@@ -109,12 +109,41 @@ class HeadCountCommand:
 
         return f"There are {count} signups for {event['event_name']}"
 
+class CreateEventCommand:
+    """Executes the add_event command."""
+    def __init__(self, phone_number, args_list):
+        self.phone_number = phone_number
+        self.args_list = args_list
+
+    def execute(self):
+        if not admin.check_admin(self.phone_number):
+            return "Access Denied. This command is for admins only."
+        
+        if len(self.args_list) < 1:
+            return "To create an event, use the format: create event [One word event code], [YYYY-MM-DD], [Full Event Name]"
+
+        full_args_str = " ".join(self.args_list)
+
+        try:
+            code, date, name = [arg.strip() for arg in full_args_str.split(",", 2)]
+
+        except ValueError:
+            return "Invalid Format, please use the format: create event [One word event code], [YYYY-MM-DD], [Full Event Name], separating by comma's"
+
+        event_id = admin.add_event(code, date, name)
+
+        if event_id:
+            return f"Success! Event '{name}' with code '{code}' has been created for {date}."
+        else:
+            return "Failed to create event. Check for duplicate event codes or invalid date format."
+
 # Dictionary of all commands
 commands = {
     "signup": SignupCommand,
     "cancel": CancelCommand,
     "add admin": AddAdminCommand,
     "attendance": HeadCountCommand,
+    "create event": CreateEventCommand,
 }
 
 # List of one argument commands
@@ -141,9 +170,16 @@ def process_sms(phone_number, message_body):
 
     command_name = commands.get(command_keyword)
     
+    if not command_name:
+        return f"Unknown Cmmand: '{command_name}'"
+
     if command_name:
         try:
-            if command_keyword in ONE_ARG_COMMANDS: # Use the list of keywords
+            if command_keyword == "create event":
+                command_instance = command_name(phone_number, command_args)
+                return command_instance.execute()
+            
+            elif command_keyword in ONE_ARG_COMMANDS: # Use the list of keywords
         
                 if not command_args:# Check if the user actually provided an argument
                     return f"The '{command_keyword}' command requires an event code."
