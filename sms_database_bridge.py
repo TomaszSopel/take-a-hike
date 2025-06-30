@@ -2,9 +2,9 @@ import event_db, admin
 
 class SignupCommand:
     """Handles the signup command."""
-    def __init__(self, phone_number, args_list):
+    def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = args_list[0] if args_list else None
+        self.event_code = event_code
 
     def execute(self):
         try:
@@ -34,10 +34,9 @@ class SignupCommand:
 
 class CancelCommand:
     """Handles the cancel command."""
-    def __init__(self, phone_number, args_list):
+    def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = args_list[0] if args_list else None
-
+        self.event_code = event_code
     def execute(self):
         """Executes the cancel command, removing the user from the event registration."""
         try:
@@ -61,9 +60,9 @@ class CancelCommand:
 
 class AddAdminCommand:
     """Handles the add admin command."""
-    def __init__(self, phone_number, args_list):
+    def __init__(self, phone_number, target_phone_number):
         self.requesting_phone_number = phone_number
-        self.target_phone_number = args_list[0] if args_list else None
+        self.target_phone_number = target_phone_number
         
     def execute(self):
         """Executes the add admin command, which is only accessible by other admins, promoting a user to admin."""
@@ -89,10 +88,9 @@ class AddAdminCommand:
 
 class HeadCountCommand:
     """Executes the get_headcount admin command."""
-    def __init__(self, phone_number, args_list):
+    def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = args_list[0] if args_list else None
-
+        self.event_code = event_code
     def execute(self):
         if not admin.check_admin(self.phone_number):
             return "Access Denied. This command is for admins only."
@@ -157,7 +155,7 @@ ONE_ARG_COMMANDS = [
 def process_sms(phone_number, message_body):
     """Processes the incoming text and executes the related commands on the database."""
     message_body_list = message_body.strip().lower().split()
-    if not message_body:
+    if not message_body_list:
         return "Empty Message Body"
     
     command_keyword = message_body_list[0] #Command keyword == *signup* cherry, triggers what function is executed
@@ -165,14 +163,14 @@ def process_sms(phone_number, message_body):
     if command_keyword == "add" and len(message_body_list) > 1 and message_body_list[1] == "admin":
         command_keyword = "add admin"
         message_body_list = [command_keyword] + message_body_list[2:]
+    elif command_keyword == "create" and len(message_body_list) > 1 and message_body_list[1] == "event":
+        command_keyword = "create event"
+        message_body_list = [command_keyword] + message_body_list[2:]
     
     command_args = message_body_list[1:] # Command_args == signup *cherry*, provides arguments for specific function
 
     command_name = commands.get(command_keyword)
     
-    if not command_name:
-        return f"Unknown Cmmand: '{command_name}'"
-
     if command_name:
         try:
             if command_keyword == "create event":
@@ -184,7 +182,7 @@ def process_sms(phone_number, message_body):
                 if not command_args:# Check if the user actually provided an argument
                     return f"The '{command_keyword}' command requires an event code."
         
-                command_instance = command_name(phone_number, command_args) # Create the command instance (works for signup, cancel, etc.)
+                command_instance = command_name(phone_number, command_args[0]) # Create the command instance (works for signup, cancel, etc.)
                 return command_instance.execute()
     
                 # Add other 'elif' blocks here for commands with different argument numbers here!
