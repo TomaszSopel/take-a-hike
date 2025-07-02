@@ -2,6 +2,7 @@ import os
 import psycopg2
 import logging
 import re
+import datetime
 
 def open_connection():
     return psycopg2.connect(
@@ -218,6 +219,37 @@ def cancel_signup(user_id:int, event_id:int):
     except psycopg2.Error as e:
         logging.error(f"Database error in cancel_signup: {e}")
         return False
+    finally:
+        close_connection(connection, cur)
+
+def get_events_for_date(target_date: datetime.date = None) -> list:
+    """Retrieves all events that are scheduled to happen at a certain date.
+    If no date is provided, then defaults to tommorows date.
+    Returns empty list if no events are scheduled for target date"""
+    
+    connection, cur = None, None
+    
+    if target_date is None:
+        target_date = datetime.date.today() + datetime.timedelta(days=1)
+
+    sql = "SELECT event_id, event_name, event_code FROM events WHERE event_date = %s;"
+    
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (target_date,))
+        events = []
+        for row in cur.fetchall():
+            events.append({
+                'event_id': row[0],
+                'event_name': row[1],
+                'event_code': row[2]
+            })
+        return events
+    except psycopg2.Error as e:
+        logging.error(f"DB Error in get_events_for_date: {e}")
+        return []
+    
     finally:
         close_connection(connection, cur)
 
