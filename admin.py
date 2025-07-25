@@ -112,7 +112,7 @@ def add_event(code: str, date: str, name: str) -> int | None:
     finally:
         event_db.close_connection(connection, cur)
 
-def delete_event(event_code:str) --> bool:
+def delete_event(event_code:str) -> bool:
     """
     Deletes an event from the events table. If an event is deleted, the 'ON DELETE CASCADE' rule
     will cause all signups for the event to be deleted as well. Returns True if successful, False
