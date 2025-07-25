@@ -111,3 +111,25 @@ def add_event(code: str, date: str, name: str) -> int | None:
         return None
     finally:
         event_db.close_connection(connection, cur)
+
+def delete_event(event_code:str) --> bool:
+    """
+    Deletes an event from the events table. If an event is deleted, the 'ON DELETE CASCADE' rule
+    will cause all signups for the event to be deleted as well. Returns True if successful, False
+    otherwise. 
+    """
+    connection, cur = None, None
+    sql = "DELETE FROM events WHERE event_code = %s;"
+
+    try: 
+        connection = event_db.open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (event_code.lower(),))
+        rows_deleted = cur.rowcount
+        connection.commit()
+        return rows_deleted > 0
+    except psycopg2.Error as e:
+        logging.error(f"DB Error in delete_event: {e}")
+        return False
+    finally:
+        event_db.close_connection(connection, cur)
