@@ -135,6 +135,29 @@ class CreateEventCommand:
         else:
             return "Failed to create event. Check for duplicate event codes or invalid date format."
 
+class DeleteEventCommand:
+    def __init__(self, phone_number, args_list):
+        self.phone_number = phone_number
+        self.event_code = args_list[0] if args_list else None
+
+    def execute(self):
+        try:
+            if not admin.check_admin(self.phone_number):
+                return "Access Denied. This command is for admins only."
+            
+            if not self.event_code:
+                return "Usage Error: delete event [event_code]"
+            
+            was_deleted = admin.delete_event(self.event_code)
+
+            if was_deleted:
+                return f"Event '{self.event_code}' has been successfully deleted."
+            else:
+                return f"Error: Event '{self.event_code}' not found"
+        except Exception as e:
+            print(f"Error in DeleteEventCommand.execute: {e}")
+            return "An error occurred while trying to delete the event."
+
 # Dictionary of all commands
 commands = {
     "signup": SignupCommand,
@@ -142,6 +165,7 @@ commands = {
     "add admin": AddAdminCommand,
     "attendance": HeadCountCommand,
     "create event": CreateEventCommand,
+    "delete event": DeleteEventCommand,
 }
 
 # List of one argument commands
@@ -150,6 +174,7 @@ ONE_ARG_COMMANDS = [
     "cancel",
     "add admin",
     "attendance",
+    "delete event",
 ]
 
 def process_sms(phone_number, message_body):
@@ -165,6 +190,9 @@ def process_sms(phone_number, message_body):
         message_body_list = [command_keyword] + message_body_list[2:]
     elif command_keyword == "create" and len(message_body_list) > 1 and message_body_list[1] == "event":
         command_keyword = "create event"
+        message_body_list = [command_keyword] + message_body_list[2:]
+    elif command_keyword == "delete" and len(message_body_list) > 1 and message_body_list[1] == "event":
+        command_keyword = "delete event"
         message_body_list = [command_keyword] + message_body_list[2:]
     
     command_args = message_body_list[1:] # Command_args == signup *cherry*, provides arguments for specific function
