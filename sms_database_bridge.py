@@ -91,6 +91,7 @@ class HeadCountCommand:
     def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
         self.event_code = event_code
+        
     def execute(self):
         if not admin.check_admin(self.phone_number):
             return "Access Denied. This command is for admins only."
@@ -136,9 +137,9 @@ class CreateEventCommand:
             return "Failed to create event. Check for duplicate event codes or invalid date format."
 
 class DeleteEventCommand:
-    def __init__(self, phone_number, args_list):
+    def __init__(self, phone_number, event_code):
         self.phone_number = phone_number
-        self.event_code = args_list[0] if args_list else None
+        self.event_code = event_code
 
     def execute(self):
         try:
