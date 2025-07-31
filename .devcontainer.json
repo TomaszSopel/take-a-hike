@@ -18,5 +18,5 @@
     ],
     "forwardPorts": [5000],
     "postCreateCommand": "pip3 install --user -r requirements.txt",
-    "remoteUser": "vscode"
+    "remoteUser": "${localEnv:USER}"
 }
