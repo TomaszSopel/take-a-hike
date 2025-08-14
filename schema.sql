@@ -8,7 +8,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -24,7 +23,6 @@ SET row_security = off;
 CREATE SCHEMA _heroku;
 
 
-ALTER SCHEMA _heroku OWNER TO heroku_admin;
 
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: u459cifb94av5h
@@ -33,7 +31,6 @@ ALTER SCHEMA _heroku OWNER TO heroku_admin;
 -- *not* creating schema, since initdb creates it
 
 
-ALTER SCHEMA public OWNER TO u459cifb94av5h;
 
 --
 -- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
@@ -93,7 +90,6 @@ BEGIN
             EXECUTE format('GRANT EXECUTE ON FUNCTION %I.bt_index_check TO %I;', schemaname, databaseowner);
             EXECUTE format('GRANT EXECUTE ON FUNCTION %I.bt_index_parent_check TO %I;', schemaname, databaseowner);
         ELSIF r.object_identity = 'dict_int' THEN
-            EXECUTE format('ALTER TEXT SEARCH DICTIONARY %I.intdict OWNER TO %I;', schemaname, databaseowner);
         ELSIF r.object_identity = 'pg_partman' THEN
             PERFORM _heroku.grant_table_if_exists(schemaname, 'SELECT, UPDATE, INSERT, DELETE', databaseowner, 'part_config');
             PERFORM _heroku.grant_table_if_exists(schemaname, 'SELECT, UPDATE, INSERT, DELETE', databaseowner, 'part_config_sub');
@@ -128,7 +124,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.create_ext() OWNER TO heroku_admin;
 
 --
 -- Name: drop_ext(); Type: FUNCTION; Schema: _heroku; Owner: heroku_admin
@@ -170,7 +165,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.drop_ext() OWNER TO heroku_admin;
 
 --
 -- Name: extension_before_drop(); Type: FUNCTION; Schema: _heroku; Owner: heroku_admin
@@ -198,7 +192,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.extension_before_drop() OWNER TO heroku_admin;
 
 --
 -- Name: grant_table_if_exists(text, text, text, text); Type: FUNCTION; Schema: _heroku; Owner: heroku_admin
@@ -221,7 +214,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.grant_table_if_exists(alias_schemaname text, grants text, databaseowner text, alias_tablename text) OWNER TO heroku_admin;
 
 --
 -- Name: postgis_after_create(); Type: FUNCTION; Schema: _heroku; Owner: heroku_admin
@@ -252,7 +244,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.postgis_after_create() OWNER TO heroku_admin;
 
 --
 -- Name: validate_extension(); Type: FUNCTION; Schema: _heroku; Owner: heroku_admin
@@ -291,7 +282,6 @@ END;
 $$;
 
 
-ALTER FUNCTION _heroku.validate_extension() OWNER TO heroku_admin;
 
 SET default_tablespace = '';
 
@@ -311,7 +301,6 @@ CREATE TABLE public.events (
 );
 
 
-ALTER TABLE public.events OWNER TO u459cifb94av5h;
 
 --
 -- Name: events_event_id_seq; Type: SEQUENCE; Schema: public; Owner: u459cifb94av5h
@@ -326,7 +315,6 @@ CREATE SEQUENCE public.events_event_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.events_event_id_seq OWNER TO u459cifb94av5h;
 
 --
 -- Name: events_event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: u459cifb94av5h
@@ -348,7 +336,6 @@ CREATE TABLE public.user_event_signups (
 );
 
 
-ALTER TABLE public.user_event_signups OWNER TO u459cifb94av5h;
 
 --
 -- Name: user_event_signups_user_event_id_seq; Type: SEQUENCE; Schema: public; Owner: u459cifb94av5h
@@ -363,7 +350,6 @@ CREATE SEQUENCE public.user_event_signups_user_event_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_event_signups_user_event_id_seq OWNER TO u459cifb94av5h;
 
 --
 -- Name: user_event_signups_user_event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: u459cifb94av5h
@@ -383,7 +369,6 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO u459cifb94av5h;
 
 --
 -- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: u459cifb94av5h
@@ -398,7 +383,6 @@ CREATE SEQUENCE public.users_user_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_user_id_seq OWNER TO u459cifb94av5h;
 
 --
 -- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: u459cifb94av5h
@@ -496,7 +480,6 @@ ALTER TABLE ONLY public.user_event_signups
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: u459cifb94av5h
 --
 
-REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
 --
@@ -514,7 +497,6 @@ CREATE EVENT TRIGGER extension_before_drop ON ddl_command_start
    EXECUTE FUNCTION _heroku.extension_before_drop();
 
 
-ALTER EVENT TRIGGER extension_before_drop OWNER TO heroku_admin;
 
 --
 -- Name: log_create_ext; Type: EVENT TRIGGER; Schema: -; Owner: heroku_admin
@@ -524,7 +506,6 @@ CREATE EVENT TRIGGER log_create_ext ON ddl_command_end
    EXECUTE FUNCTION _heroku.create_ext();
 
 
-ALTER EVENT TRIGGER log_create_ext OWNER TO heroku_admin;
 
 --
 -- Name: log_drop_ext; Type: EVENT TRIGGER; Schema: -; Owner: heroku_admin
@@ -534,7 +515,6 @@ CREATE EVENT TRIGGER log_drop_ext ON sql_drop
    EXECUTE FUNCTION _heroku.drop_ext();
 
 
-ALTER EVENT TRIGGER log_drop_ext OWNER TO heroku_admin;
 
 --
 -- Name: validate_extension; Type: EVENT TRIGGER; Schema: -; Owner: heroku_admin
@@ -544,7 +524,6 @@ CREATE EVENT TRIGGER validate_extension ON ddl_command_end
    EXECUTE FUNCTION _heroku.validate_extension();
 
 
-ALTER EVENT TRIGGER validate_extension OWNER TO heroku_admin;
 
 --
 -- PostgreSQL database dump complete
