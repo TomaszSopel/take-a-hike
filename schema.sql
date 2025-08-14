@@ -486,7 +486,6 @@ ALTER TABLE ONLY public.user_event_signups
 -- Name: FUNCTION pg_stat_statements_reset(userid oid, dbid oid, queryid bigint); Type: ACL; Schema: public; Owner: rdsadmin
 --
 
-GRANT ALL ON FUNCTION public.pg_stat_statements_reset(userid oid, dbid oid, queryid bigint) TO u459cifb94av5h;
 
 
 --
