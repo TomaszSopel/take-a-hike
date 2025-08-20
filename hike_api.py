@@ -2,6 +2,8 @@ import logging, os, event_db, sms_database_bridge
 from flask import Flask, request, Response
 from sms import Sms
 from twilio.rest import Client
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
