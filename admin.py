@@ -1,8 +1,9 @@
-import event_db
-import psycopg2
-import event_db
-import logging
 import datetime
+import logging
+
+import psycopg2
+
+import event_db
 
 """"This file handles all the admin related functions"""
 

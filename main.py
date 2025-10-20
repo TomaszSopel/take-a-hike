@@ -1,5 +1,7 @@
-from hike_api import app
 import logging
+
+from hike_api import app
+
 
 def main():
     logging.info("Main Started")

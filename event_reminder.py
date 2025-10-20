@@ -1,14 +1,17 @@
-import schedule
-import time
 import datetime
-import threading
 import logging
-from typing import Dict
-import event_db
-import admin
-from sms import Sms
-from twilio.rest import Client
 import os
+import threading
+import time
+from typing import Dict
+
+import schedule
+from twilio.rest import Client
+
+import admin
+import event_db
+from sms import Sms
+
 
 class EventReminderService:
     def __init__(self):

@@ -1,9 +1,18 @@
-import logging, os, event_db, sms_database_bridge, schedule, time, threading
-from flask import Flask, request, Response
-from sms import Sms
-from twilio.rest import Client
+import logging
+import os
+import threading
+import time
+
+import schedule
 from dotenv import load_dotenv
+from flask import Flask, Response, request
+from twilio.rest import Client
+
+import event_db
+import sms_database_bridge
 from event_reminder import EventReminderService
+from sms import Sms
+
 load_dotenv()
 
 app = Flask(__name__)

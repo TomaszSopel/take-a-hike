@@ -1,8 +1,10 @@
-import os
-import psycopg2
-import logging
-import re
 import datetime
+import logging
+import os
+import re
+
+import psycopg2
+
 
 def open_connection():
     return psycopg2.connect(

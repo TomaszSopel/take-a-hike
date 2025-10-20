@@ -1,4 +1,6 @@
-import event_db, admin
+import admin
+import event_db
+
 
 class SignupCommand:
     """Handles the signup command."""
