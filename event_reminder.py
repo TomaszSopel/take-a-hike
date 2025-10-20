@@ -46,6 +46,7 @@ class EventReminderService:
         try:
             event_id = event['event_id']
             event_name = event['event_name']
+            event_code = event['event_code']
             
             signed_up_users = event_db.event_get_numbers(event_id)
             
@@ -58,11 +59,10 @@ class EventReminderService:
                 'event_id': event_id,
                 'event_name': event_name,
                 'total_signups': len(signed_up_users),
-                'confirmations': 0,
                 'start_time': datetime.datetime.now()
             }
             
-            message = f"Hi! You're signed up for {event_name} tomorrow. Reply 'CONFIRM {confirmation_id}' to confirm your attendance."
+            message = f"Hi! You're signed up for {event_name} tomorrow. Reply 'CONFIRM {event_code}' to confirm your attendance."
             
             for user_tuple in signed_up_users:
                 user_id = user_tuple[0]
