@@ -160,7 +160,39 @@ class DeleteEventCommand:
         except Exception as e:
             print(f"Error in DeleteEventCommand.execute: {e}")
             return "An error occurred while trying to delete the event."
+        
+class ConfirmEventCommand:
+    def __init__(self, phone_number, event_code):
+        self.phone_number = phone_number
+        self.event_code = event_code
+    
+    def execute(self):
+        try:
+            if not self.event_code:
+                return "Usage Error: That event code doesn't exist, use the format: confirm [event_code]"
 
+            if not self.phone_number: # Returns an error message if the event code is not found
+                return f"User with number {self.phone_number} not found. Please check the code and try again."
+
+            user_id = event_db.get_user(self.phone_number)
+            if not user_id:
+                return "A user with that phone number was not found! Contact your system administrator!"
+
+            event = event_db.get_event_by_code(self.event_code)
+            if not event:
+                return "An event with that code was not found, please try again!"
+
+            confirmation_status = event_db.confirm_attendance(user_id=user_id, event_id=event["event_id"])
+
+            if confirmation_status:
+                return f"Your attendance tomorrow has been confirmed for {event['event_name']}! See you tomorrow!"
+            else:
+                return f"Your attendance for {event['event_name']} was unable to be confirmed, please contact an administrator!"
+
+        except Exception as error:
+            print(f"Error in ConfirmCommand.execute: {error}")
+            return "Error (Confirm)"
+        
 # Dictionary of all commands
 commands = {
     "signup": SignupCommand,
@@ -169,6 +201,7 @@ commands = {
     "attendance": HeadCountCommand,
     "create event": CreateEventCommand,
     "delete event": DeleteEventCommand,
+    "confirm": ConfirmEventCommand,
 }
 
 # List of one argument commands
@@ -178,6 +211,7 @@ ONE_ARG_COMMANDS = [
     "add admin",
     "attendance",
     "delete event",
+    "confirm",
 ]
 
 def process_sms(phone_number, message_body):
