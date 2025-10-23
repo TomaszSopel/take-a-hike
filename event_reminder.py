@@ -75,15 +75,24 @@ class EventReminderService:
                     except Exception as e:
                         logging.error(f"Failed to send SMS to {phone_number}: {e}")
                         
-            threading.Timer(14400, self.send_admin_report, args=[confirmation_id]).start()
+            threading.Timer(14400, self.send_admin_headcount_report, args=[confirmation_id]).start()
             logging.info(f"Scheduled admin report for {event_name} in 4 hours")
             
         except Exception as e:
             logging.error(f"Error sending event reminders: {e}")
 
-    def send_admin_report(self, confirmation_id):
+    def send_admin_headcount_report(self, confirmation_id):
         """Sends the final headcount report to admins."""
-        # Placeholder code for CI test
-        pass
-    
-    
+        event_id = int(confirmation_id.split("_")[0]) #Confirmation ID is a string containing eventID_timestamp
+        
+        event_data = self.confirmation_requests[confirmation_id]
+
+        event_name = event_data["event_name"]
+        admin_numbers = admin.get_admins()
+        headcount = admin.get_confirmation_count(event_id)
+        total_signups = event_data["total_signups"]
+
+        message = f"The headcount for tomorrow's {event_name} is {headcount}/{total_signups} signups!"
+
+        for admin_phone_number in admin_numbers:
+            self.sms.send_sms(to_number=admin_phone_number, body=message)
