@@ -134,3 +134,22 @@ def delete_event(event_code:str) -> bool:
         return False
     finally:
         event_db.close_connection(connection, cur)
+
+def get_admins():
+    connection, cur = None, None
+
+    sql = "SELECT phone_number FROM users WHERE is_admin = true;"
+
+    try:
+        connection = event_db.open_connection()
+        cur = connection.cursor()
+        cur.execute(sql)
+        admin_list = cur.fetchall()
+
+        admin_list = [item[0] for item in admin_list]
+        return admin_list
+    except Exception as e:
+        logging.error(f"Error in get_admins: {e}")
+        return None
+    finally:
+        event_db.close_connection(connection, cur)
