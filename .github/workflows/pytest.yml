@@ -5,15 +5,16 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest 
+    env:
+      TWILIO_SID: ${{ secrets.TWILIO_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      TWILIO_NUMBER: ${{ secrets.TWILIO_NUMBER }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.x 
         uses: actions/setup-python@v3
         with:
           python-version: "3.12" 
-        env:
-          TWILIO_SID: ${{ secrets.TWILIO_SID }}
-          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Pytest

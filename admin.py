@@ -1,8 +1,9 @@
-import event_db
-import psycopg2
-import event_db
-import logging
 import datetime
+import logging
+
+import psycopg2
+
+import event_db
 
 """"This file handles all the admin related functions"""
 
@@ -131,5 +132,41 @@ def delete_event(event_code:str) -> bool:
     except psycopg2.Error as e:
         logging.error(f"DB Error in delete_event: {e}")
         return False
+    finally:
+        event_db.close_connection(connection, cur)
+
+def get_admins():
+    connection, cur = None, None
+
+    sql = "SELECT phone_number FROM users WHERE is_admin = true;"
+
+    try:
+        connection = event_db.open_connection()
+        cur = connection.cursor()
+        cur.execute(sql)
+        admin_list = cur.fetchall()
+
+        admin_list = [item[0] for item in admin_list]
+        return admin_list
+    except Exception as e:
+        logging.error(f"Error in get_admins: {e}")
+        return None
+    finally:
+        event_db.close_connection(connection, cur)
+
+def get_confirmation_count(event_id):
+    connection, cur = None, None
+
+    sql = "SELECT COUNT(*) FROM user_event_signups WHERE attendance_confirmed = true AND event_id = %s;"
+
+    try:
+        connection = event_db.open_connection()
+        cur = connection.cursor()
+        cur.execute(sql, (event_id,))
+        confirmed_responses = cur.fetchone()[0]
+
+        return confirmed_responses
+    except Exception as e:
+        logging.error(f"Error in get_confirmation_count: {e}")
     finally:
         event_db.close_connection(connection, cur)

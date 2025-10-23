@@ -1,11 +1,22 @@
-import logging, os, event_db, sms_database_bridge
-from flask import Flask, request, Response
-from sms import Sms
-from twilio.rest import Client
+import logging
+import os
+import threading
+import time
+
+import schedule
 from dotenv import load_dotenv
+from flask import Flask, Response, request
+from twilio.rest import Client
+
+import event_db
+import sms_database_bridge
+from event_reminder import EventReminderService
+from sms import Sms
+
 load_dotenv()
 
 app = Flask(__name__)
+reminder_service = EventReminderService()
 
 account_sid = os.environ.get("TWILIO_SID")
 auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -49,7 +60,20 @@ def receive_text():
         logging.error(f"Error Message: {e}")
         return "Error occurred", 500
 
+def start_scheduler():
+    logging.info("Event reminder scheduler started.")
+
+    schedule.every().day.at("10:00").do(
+        reminder_service.check_and_send_reminders
+    )
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
 if __name__ == "__main__":
+    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+    scheduler_thread.start()
     app.run(debug=True)
 
 

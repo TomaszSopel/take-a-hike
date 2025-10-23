@@ -1,8 +1,10 @@
-import os
-import psycopg2
-import logging
-import re
 import datetime
+import logging
+import os
+import re
+
+import psycopg2
+
 
 def open_connection():
     return psycopg2.connect(
@@ -253,6 +255,30 @@ def get_events_for_date(target_date: datetime.date = None) -> list:
     finally:
         close_connection(connection, cur)
 
+def confirm_attendance(user_id:int, event_id:int) -> bool:
+    """"
+    Changes the attendance_confirmed value for a user-event-signup from False to True.
+    Returns True if update was successful (1 row changed), otherwise False.
+    """
+    connection, cur = None, None
+    sql = "UPDATE user_event_signups SET attendance_confirmed = true WHERE user_id = %s and event_id = %s;"
+    
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+
+        cur.execute(sql, (user_id, event_id))
+
+        connection.commit()
+
+        #If a value was updated, it will return True, False otherwise
+        return cur.rowcount == 1
+
+    except psycopg2.Error as e:
+        logging.error(f"Database error in confirming attendance: {e}")
+        return False
+    finally:
+        close_connection(connection, cur)
 """
 def add_event(event_name, date, location, code, description)
     This will implement the addition of an event to the events table via SMS, 
