@@ -46,17 +46,25 @@ def get_user(number:str):
     finally:
         close_connection(connection, cur)
 
-def get_phone(id:int):
+def get_phone(user_id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns 0."""
     connection, cur = None, None
+    sql = "SELECT phone_number FROM users WHERE user_id = %s"
+    
     try:
         connection = open_connection()
         cur = connection.cursor()
-        cur.execute(f"SELECT phone_number FROM users WHERE user_id = '{id}'")
-        id = cur.fetchone()
-        return id[0]
-    except TypeError:
-        return 0
+        cur.execute(sql, (user_id,)) # Pass user_id as a tuple
+        result = cur.fetchone()
+        
+        if result:
+            return result[0]
+        else:
+            return 0 # Return 0 if user_id not found
+            
+    except (psycopg2.Error, TypeError) as e:
+        logging.error(f"Error in get_phone: {e}")
+        return 0 # Return 0 on error
     finally:
         close_connection(connection, cur)
 
