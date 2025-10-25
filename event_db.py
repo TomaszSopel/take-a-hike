@@ -91,14 +91,18 @@ def get_event_id(code:str):
     """Inputs an event event code (str) and checks if the corresponding event 
     exists in the events table, returning event id (int), otherwise False"""
     connection, cur = None, None
+
+    sql = "SELECT event_id FROM events WHERE event_code = %s"
+
     try:
         connection = open_connection()
         cur = connection.cursor()
-        cur.execute(f"SELECT event_id FROM events WHERE event_code = '{code.lower()}'")
+        cur.execute(sql,((code.lower()),))
         event_id = cur.fetchone()
-        return event_id[0]
-    except TypeError:
-        return False
+        if event_id == None:
+            return None
+        else:
+            return event_id[0]
     finally:
         close_connection(connection, cur)
 
