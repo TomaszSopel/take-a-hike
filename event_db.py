@@ -110,18 +110,21 @@ def get_event_id(code:str):
 def sign_up(user_id:int, event_id:int):
     """Inputs user id and event id and logs them into the user_events_signup table."""
     connection, cur = None, None
+
+    sql = "SELECT * FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
+
     try:
         connection = open_connection()
         cur = connection.cursor()
-        print(f"Function: Sign_up(), user_id is {user_id} and event_id is {event_id}")
-        check = cur.execute(f"SELECT * FROM user_event_signups WHERE user_id = {user_id} AND event_id = {event_id};")
+        check = cur.execute(sql, (user_id, event_id))
         check = cur.fetchone()
         print(f"sign_up() --> check is {check}")
         if check is not None: #If a check exists, then it's already been entered on the user_event_signups table
             print("Entry already exists. Returning None")
             return None
         else:
-            cur.execute(f"INSERT INTO user_event_signups (user_id, event_id) VALUES ({user_id},{event_id});")
+            sql = "INSERT INTO user_event_signups (user_id, event_id) VALUES (%s, %s);"
+            cur.execute(sql, (user_id,event_id))
             connection.commit()
             print("entry logged")
             return True
