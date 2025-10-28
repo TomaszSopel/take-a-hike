@@ -136,13 +136,17 @@ def sign_up(user_id:int, event_id:int):
 def event_get_numbers(event_id:int):
     """Inputs an event code (int) and returns all phone numbers signed up for the event (list[int])"""
     connection, cur = None, None
+
+    sql = "SELECT user_id FROM user_event_signups WHERE event_id = %s;"
+
     try:
         connection = open_connection()
         cur = connection.cursor()
-        cur.execute(f"SELECT user_id FROM user_event_signups WHERE event_id = {event_id};")
+        cur.execute(sql, (event_id,))
         return (cur.fetchall())
-    except:
-        print("Error")
+    except Exception as e:
+        logging.error(f"Error in get_event_numbers: {e}")
+        return None
     finally:
         close_connection(connection, cur)
 
