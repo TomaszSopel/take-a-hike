@@ -21,8 +21,6 @@ def close_connection(connection, cursor=None):
     if connection:
         connection.close()
 
-#TODO 1: write code that says, "if no password treat it as an empty string"
-
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns None"""

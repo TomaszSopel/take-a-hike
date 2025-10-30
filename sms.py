@@ -10,7 +10,6 @@ class Sms:
             logging.warning("TWILIO_NUMBER not found in environment variables!")
  
         
-# TODO: Modify the send message function to require a phone number as an argument (otherwise all followup texts following a signup will be sent to the twilio number)
     def send_sms(self, to_number, body):
         try:
             message = self.client.messages.create(
