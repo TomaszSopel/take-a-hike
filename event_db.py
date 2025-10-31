@@ -150,7 +150,7 @@ def event_get_numbers(event_id:int):
 
 def get_events():
     """Returns all events currently registered"""
-    connection, cur = None, None"
+    connection, cur = None, None
 
     try:
         connection = open_connection()
