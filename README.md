@@ -23,7 +23,7 @@ This project aims to address the issue of no-shows for scheduled hikes at local 
 2.  Install the required dependencies using `pip install -r requirements.txt`.
 3.  Set up a PostgreSQL database. The database name should be `take_a_hike`.
 4.  Run the `schema.sql` file to create the necessary tables.
-5.  Configure the Twilio API credentials in the `sms.py` file.
+5.  Set your Twilio API credentials as environment variables (TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER).
 6.  Run the application using `python main.py`.
 
 ## Usage
