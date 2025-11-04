@@ -157,7 +157,7 @@ def get_events():
         cur = connection.cursor()
         cur.execute("SELECT event_code FROM events;")
         raw_events_list = cur.fetchall()
-        events_list = [str(item).replace(",", "").replace("(", "").replace(")", "").replace("'", "") for item in raw_events_list] #Converts output into a list of strings
+        events_list = [item[0] for item in raw_events_list]
         return (events_list)
     except:
         print("Error")
