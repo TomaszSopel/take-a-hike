@@ -297,6 +297,33 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
         return False
     finally:
         close_connection(connection, cur)
+
+def get_phone_numbers_for_event(event_id):
+    connection, cur = None, None
+
+    sql = "" \
+    "SELECT phone_number from users " \
+    "JOIN user_event_signups " \
+    "ON users.user_id=user_event_signups.user_id " \
+    "WHERE user_event_signups.event_id=%s;"
+
+    try:
+        connection = open_connection()
+        cur = connection.cursor()
+
+        cur.execute(sql, (event_id,))
+        phone_number_list = cur.fetchall()
+
+        phone_number_list = [item[0] for item in phone_number_list]
+
+        return phone_number_list
+    except psycopg2.Error as e:
+        logging.error(f"Database error in getting phone numbers for event: {e}")
+        return []
+    finally:
+        close_connection(connection, cur)
+
+
 """
 def add_event(event_name, date, location, code, description)
     This will implement the addition of an event to the events table via SMS, 
