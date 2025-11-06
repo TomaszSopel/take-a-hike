@@ -4,6 +4,9 @@ import logging
 import psycopg2
 
 import event_db
+import os
+import sms
+from twilio.rest import Client
 
 """"This file handles all the admin related functions"""
 
@@ -170,3 +173,16 @@ def get_confirmation_count(event_id):
         logging.error(f"Error in get_confirmation_count: {e}")
     finally:
         event_db.close_connection(connection, cur)
+
+def notify_event_participants(event_id, msg:str):
+
+    phone_numbers_list = event_db.get_phone_numbers_for_event(event_id)
+
+    client = Client(
+            os.environ.get('TWILIO_SID'),
+            os.environ.get('TWILIO_AUTH_TOKEN')
+        )
+    sms_sender = sms.Sms(client)
+
+    for number in phone_numbers_list:
+        sms_sender.send_sms(to_number=number, body=msg)
