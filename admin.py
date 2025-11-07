@@ -10,6 +10,14 @@ from twilio.rest import Client
 
 """"This file handles all the admin related functions"""
 
+
+client = Client(
+        os.environ.get('TWILIO_SID'),
+        os.environ.get('TWILIO_AUTH_TOKEN')
+    )
+sms_sender = sms.Sms(client)
+
+
 def check_admin(phone_number:str) -> bool | None:
     """Takes a phone number in the form of a string and returns the specific users True or False value for is_admin.
     If the number provided is not found in the users table, returns None."""
@@ -178,11 +186,7 @@ def notify_event_participants(event_id, msg:str):
 
     phone_numbers_list = event_db.get_phone_numbers_for_event(event_id)
 
-    client = Client(
-            os.environ.get('TWILIO_SID'),
-            os.environ.get('TWILIO_AUTH_TOKEN')
-        )
-    sms_sender = sms.Sms(client)
-
     for number in phone_numbers_list:
         sms_sender.send_sms(to_number=number, body=msg)
+    
+    return len(phone_numbers_list)
