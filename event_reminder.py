@@ -68,7 +68,7 @@ class EventReminderService:
                 user_id = user_tuple[0]
                 phone_number = event_db.get_phone(user_id)
                 
-                if phone_number and phone_number != 0:
+                if phone_number:
                     try:
                         self.sms.send_sms(phone_number, message)
                         logging.info(f"Sent reminder to {phone_number} for {event_name}")

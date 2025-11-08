@@ -58,11 +58,11 @@ def get_phone(user_id:int):
         if result:
             return result[0]
         else:
-            return 0 # Return 0 if user_id not found
+            return None # Return None if not found
             
     except (psycopg2.Error, TypeError) as e:
         logging.error(f"Error in get_phone: {e}")
-        return 0 # Return 0 on error
+        return None
     finally:
         close_connection(connection, cur)
 
