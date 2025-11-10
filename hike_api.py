@@ -71,9 +71,10 @@ def start_scheduler():
         schedule.run_pending()
         time.sleep(60)
 
+scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+scheduler_thread.start()
+
 if __name__ == "__main__":
-    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
-    scheduler_thread.start()
     app.run(debug=True)
 
 
