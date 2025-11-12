@@ -3,14 +3,14 @@ import logging
 import os
 import re
 
-import psycopg2
+import psycopg
 
 
 def open_connection():
-    return psycopg2.connect(
+    return psycopg.connect(
         host = os.environ.get('HOST'),
         port = os.environ.get('DB_PORT'),
-        database = os.environ.get('DATABASE'),
+        dbname = os.environ.get('DATABASE'),
         password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
         user = os.environ.get('USER'),
     )
@@ -38,7 +38,7 @@ def get_user(number:str):
         else:
             print("get_user failed: User not found in users table.")
             return None
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in get_user: {e}")
         return None
     finally:
@@ -60,7 +60,7 @@ def get_phone(user_id:int):
         else:
             return None # Return None if not found
             
-    except (psycopg2.Error, TypeError) as e:
+    except (psycopg.Error, TypeError) as e:
         logging.error(f"Error in get_phone: {e}")
         return None
     finally:
@@ -80,7 +80,7 @@ def log_user(phone_number: str):
         cur = connection.cursor()
         cur.execute(sql, (normalized_number,))
         connection.commit()
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in log_user: {e}")
     finally:
         close_connection(connection, cur)
@@ -126,7 +126,7 @@ def sign_up(user_id:int, event_id:int):
             connection.commit()
             print("entry logged")
             return True
-    except psycopg2.errors.ForeignKeyViolation:
+    except psycopg.errors.ForeignKeyViolation:
         print("File not Found: You can control this error!!!")
     finally:
         close_connection(connection, cur)
@@ -236,7 +236,7 @@ def cancel_signup(user_id:int, event_id:int):
         # Return True if a row was deleted, False otherwise.
         return rows_deleted > 0
 
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"Database error in cancel_signup: {e}")
         return False
     finally:
@@ -266,7 +266,7 @@ def get_events_for_date(target_date: datetime.date = None) -> list:
                 'event_code': row[2]
             })
         return events
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in get_events_for_date: {e}")
         return []
     
@@ -292,7 +292,7 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
         #If a value was updated, it will return True, False otherwise
         return cur.rowcount == 1
 
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"Database error in confirming attendance: {e}")
         return False
     finally:
@@ -317,7 +317,7 @@ def get_phone_numbers_for_event(event_id):
         phone_number_list = [item[0] for item in phone_number_list]
 
         return phone_number_list
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"Database error in getting phone numbers for event: {e}")
         return []
     finally:

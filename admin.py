@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-import psycopg2
+import psycopg
 
 import event_db
 import os
@@ -40,7 +40,7 @@ def check_admin(phone_number:str) -> bool | None:
             return response[0]
         else:
             return None
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"Database error: {e}")
         return None
     finally:
@@ -62,7 +62,7 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
         cur.execute(query, (status, normalized_phone_number))
         connection.commit()
         return cur.rowcount == 1
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in set_admin_status: {e}")
         return False
     finally:
@@ -86,7 +86,7 @@ def get_headcount(event_code:str) -> int | None:
 
         count = cur.fetchone()[0]
         return count
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in get_headcount: {e}")
         return None
     finally:
@@ -116,7 +116,7 @@ def add_event(code: str, date: str, name: str) -> int | None:
 
         connection.commit()
         return new_id
-    except (psycopg2.Error, ValueError) as e:
+    except (psycopg.Error, ValueError) as e:
         logging.error(f"DB Error or invalid date format in add_event: {e}")
         if connection:
             connection.rollback()
@@ -140,7 +140,7 @@ def delete_event(event_code:str) -> bool:
         rows_deleted = cur.rowcount
         connection.commit()
         return rows_deleted > 0
-    except psycopg2.Error as e:
+    except psycopg.Error as e:
         logging.error(f"DB Error in delete_event: {e}")
         return False
     finally:
