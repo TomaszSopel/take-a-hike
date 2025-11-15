@@ -151,10 +151,18 @@ class DeleteEventCommand:
             if not self.event_code:
                 return "Usage Error: delete event [event_code]"
             
+            event = event_db.get_event_by_code(self.event_code)
+            if not event:
+                return f"Event {self.event_code} not found."
+            
+            cancellation_msg = f"Alert: {event['event_name']} has been cancelled."
+
+            number_notified = admin.notify_event_participants(event['event_id'], cancellation_msg)
+
             was_deleted = admin.delete_event(self.event_code)
 
             if was_deleted:
-                return f"Event '{self.event_code}' has been successfully deleted."
+                return f"Event '{self.event_code}' has been successfully deleted. {number_notified} users were notified."
             else:
                 return f"Error: Event '{self.event_code}' not found"
         except Exception as e:
