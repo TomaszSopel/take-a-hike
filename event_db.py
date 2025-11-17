@@ -6,7 +6,7 @@ import re
 import psycopg
 
 
-def open_connection():
+def open_connection() -> psycopg.Connection:
     return psycopg.connect(
         host = os.environ.get('HOST'),
         port = os.environ.get('DB_PORT'),
