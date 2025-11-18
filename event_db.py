@@ -114,7 +114,7 @@ def sign_up(user_id:int, event_id:int):
     try:
         connection = open_connection()
         cur = connection.cursor()
-        check = cur.execute(sql, (user_id, event_id))
+        cur.execute(sql, (user_id, event_id))
         check = cur.fetchone()
         print(f"sign_up() --> check is {check}")
         if check is not None: #If a check exists, then it's already been entered on the user_event_signups table
@@ -128,6 +128,7 @@ def sign_up(user_id:int, event_id:int):
             return True
     except psycopg.errors.ForeignKeyViolation:
         print("File not Found: You can control this error!!!")
+        return False
     finally:
         close_connection(connection, cur)
 
