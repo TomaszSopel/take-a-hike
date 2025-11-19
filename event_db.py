@@ -127,7 +127,7 @@ def sign_up(user_id:int, event_id:int):
             print("entry logged")
             return True
     except psycopg.errors.ForeignKeyViolation:
-        print("File not Found: You can control this error!!!")
+        logging.error(f"Signup Failed: UserID {user_id} or EventID {event_id} does not exist.")
         return False
     finally:
         close_connection(connection, cur)
