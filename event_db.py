@@ -43,25 +43,26 @@ def get_connection_string():
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns None"""
-    number = normalize_phone_number(number)
-    connection, cur = None, None
+    normalized_number = normalize_phone_number(number)
+    if not normalized_number:
+        return None
+
     sql = "SELECT user_id FROM users WHERE phone_number = %s;"
+    
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (number,))
-        user_id = cur.fetchone()
-        if user_id:
-            print(f"user_id is {user_id[0]}")
-            return user_id[0]
-        else:
-            print("get_user failed: User not found in users table.")
-            return None
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (normalized_number,))
+            row = response.fetchone()
+            if row:
+                user_id = row[0]
+                return user_id
+            else:
+                print("get_user failed: User not found in users table.")
+                return None
+
     except psycopg.Error as e:
         logging.error(f"DB Error in get_user: {e}")
         return None
-    finally:
-        close_connection(connection, cur)
 
 def get_phone(user_id:int):
     """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns 0."""
