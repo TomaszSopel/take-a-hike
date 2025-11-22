@@ -65,26 +65,23 @@ def get_user(number:str):
         return None
 
 def get_phone(user_id:int):
-    """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns 0."""
-    connection, cur = None, None
+    """Inputs a user id (int) and returns their corresponding phone number (str). If not found, returns None."""
+
     sql = "SELECT phone_number FROM users WHERE user_id = %s"
     
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (user_id,)) # Pass user_id as a tuple
-        result = cur.fetchone()
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (user_id,)) # Pass user_id as a tuple
+            row = response.fetchone()
         
-        if result:
-            return result[0]
-        else:
-            return None # Return None if not found
+            if row:
+                return row[0]
+            else:
+                return None # Return None if not found
             
-    except (psycopg.Error, TypeError) as e:
+    except psycopg.Error as e:
         logging.error(f"Error in get_phone: {e}")
         return None
-    finally:
-        close_connection(connection, cur)
 
 def log_user(phone_number: str):
     """Takes a phone number (str) and logs it into the users table."""
