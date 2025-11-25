@@ -100,22 +100,21 @@ def log_user(phone_number: str):
     
 def get_event_id(code:str):
     """Inputs an event event code (str) and checks if the corresponding event 
-    exists in the events table, returning event id (int), otherwise False"""
-    connection, cur = None, None
+    exists in the events table, returning event id (int), otherwise None"""
 
     sql = "SELECT event_id FROM events WHERE event_code = %s"
-
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql,((code.lower()),))
-        event_id = cur.fetchone()
-        if event_id == None:
-            return None
-        else:
-            return event_id[0]
-    finally:
-        close_connection(connection, cur)
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (code.lower(),))
+            row = response.fetchone()
+    
+            if row == None:
+                return None
+            else:
+                return row[0]
+    except psycopg.Error as e:
+        logging.error(f"DB Error in get_event_id: {e}")
+
 
 # TODO 1: Modify sign_up() to refuse duplicate signups
 def sign_up(user_id:int, event_id:int):
