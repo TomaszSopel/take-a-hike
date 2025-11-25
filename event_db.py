@@ -85,7 +85,6 @@ def get_phone(user_id:int):
 
 def log_user(phone_number: str):
     """Takes a phone number (str) and logs it into the users table."""
-    connection, cur = None, None
 
     normalized_number = normalize_phone_number(phone_number)
     if not normalized_number:
@@ -93,15 +92,12 @@ def log_user(phone_number: str):
     
     sql = "INSERT INTO users (phone_number) VALUES (%s) ON CONFLICT (phone_number) DO NOTHING;"
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (normalized_number,))
-        connection.commit()
+        with psycopg.connect(get_connection_string()) as connection:
+            connection.execute(sql, (normalized_number,))
+            connection.commit()
     except psycopg.Error as e:
         logging.error(f"DB Error in log_user: {e}")
-    finally:
-        close_connection(connection, cur)
-
+    
 def get_event_id(code:str):
     """Inputs an event event code (str) and checks if the corresponding event 
     exists in the events table, returning event id (int), otherwise False"""
