@@ -48,7 +48,7 @@ class EventReminderService:
             event_name = event['event_name']
             event_code = event['event_code']
             
-            signed_up_users = event_db.event_get_numbers(event_id)
+            signed_up_users = event_db.get_user_ids_for_event(event_id)
             
             if not signed_up_users:
                 logging.info(f"No users signed up for event: {event_name}")
@@ -64,9 +64,8 @@ class EventReminderService:
             
             message = f"Hi! You're signed up for {event_name} tomorrow. Reply 'CONFIRM {event_code}' to confirm your attendance."
             
-            for user_tuple in signed_up_users:
-                user_id = user_tuple[0]
-                phone_number = event_db.get_phone(user_id)
+            for user in signed_up_users:
+                phone_number = event_db.get_phone(user)
                 
                 if phone_number:
                     try:

@@ -145,23 +145,21 @@ def sign_up(user_id:int, event_id:int):
         return None
 
 
-def event_get_numbers(event_id:int):
-    """Inputs an event code (int) and returns all phone numbers signed up for the event (list[int])"""
-    connection, cur = None, None
+def get_user_ids_for_event(event_id:int):
+    """Inputs an event code (int) and returns all user ID's signed up for the event (list[int]). """
 
     sql = "SELECT user_id FROM user_event_signups WHERE event_id = %s;"
 
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (event_id,))
-        return (cur.fetchall())
-    except Exception as e:
-        logging.error(f"Error in get_event_numbers: {e}")
-        return None
-    finally:
-        close_connection(connection, cur)
-
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (event_id,))
+            rows = response.fetchall()
+            user_id_list = [row[0] for row in rows]
+            return user_id_list
+    except psycopg.Error as e:
+        logging.error(f"Error in get_user_ids_for_event: {e}")
+        return [] # Returns an empty list instead of failing. 
+        
 def get_events():
     """Returns all events currently registered"""
     connection, cur = None, None
