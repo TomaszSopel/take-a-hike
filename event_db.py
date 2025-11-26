@@ -119,30 +119,31 @@ def get_event_id(code:str):
 # TODO 1: Modify sign_up() to refuse duplicate signups
 def sign_up(user_id:int, event_id:int):
     """Inputs user id and event id and logs them into the user_events_signup table."""
-    connection, cur = None, None
 
     sql = "SELECT * FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
 
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (user_id, event_id))
-        check = cur.fetchone()
-        print(f"sign_up() --> check is {check}")
-        if check is not None: #If a check exists, then it's already been entered on the user_event_signups table
-            print("Entry already exists. Returning None")
-            return None
-        else:
-            sql = "INSERT INTO user_event_signups (user_id, event_id) VALUES (%s, %s);"
-            cur.execute(sql, (user_id,event_id))
-            connection.commit()
-            print("entry logged")
-            return True
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (user_id, event_id))
+            check = response.fetchone()
+
+            if check is not None: #If a check exists, then it's already been entered on the user_event_signups table
+                print("Entry already exists. Returning None")
+                return None
+            else:
+                sql = "INSERT INTO user_event_signups (user_id, event_id) VALUES (%s, %s);"
+                connection.execute(sql, (user_id,event_id))
+                connection.commit()
+                print("entry logged")
+                return True
     except psycopg.errors.ForeignKeyViolation:
         logging.error(f"Signup Failed: UserID {user_id} or EventID {event_id} does not exist.")
         return False
-    finally:
-        close_connection(connection, cur)
+    
+    except psycopg.Error as e:
+        logging.error(f"Error in sign_up: {e}")
+        return None
+
 
 def event_get_numbers(event_id:int):
     """Inputs an event code (int) and returns all phone numbers signed up for the event (list[int])"""
