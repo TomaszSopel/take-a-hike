@@ -162,20 +162,17 @@ def get_user_ids_for_event(event_id:int):
         
 def get_events():
     """Returns all events currently registered"""
-    connection, cur = None, None
 
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute("SELECT event_code FROM events;")
-        raw_events_list = cur.fetchall()
-        events_list = [item[0] for item in raw_events_list]
-        return (events_list)
-    except:
-        print("Error")
-    finally:
-        close_connection(connection, cur)
-
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute("SELECT event_code FROM events;")
+            rows = response.fetchall()
+            events_list = [item[0] for item in rows]
+            return events_list
+    except psycopg.Error as e:
+        logging.error(f"Error in get_events: {e}")
+        return []
+    
 def normalize_phone_number(phone_number:str) -> str | None:
     """Takes a phone number in the form of a string and normalizes it to a E.164 format."""
     if not phone_number:
