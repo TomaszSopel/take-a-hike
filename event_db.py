@@ -195,36 +195,34 @@ def normalize_phone_number(phone_number:str) -> str | None:
 def get_event_by_code(event_code:str) -> dict | None:
     """Takes the event code for a particular event, and returns the event_id, event_name, event_date, event_description, and event_location
     that corresponds with the event_code; returned as a dictionary."""   
-    connection, cur = None, None
+
     sql = """
         SELECT event_id, event_name, event_code, event_date, event_description, event_location
         FROM events
         WHERE event_code = %s;
     """
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (event_code.lower(),))
-        event_info = cur.fetchone()
-        
-        if event_info:
-            event_dict = {
-                'event_id': event_info[0],
-                'event_name': event_info[1],
-                'event_code': event_info[2],
-                'event_date': event_info[3],
-                'event_description': event_info[4],
-                'event_location': event_info[5]
-            }
-            return event_dict
-        else:
-            return None
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (event_code.lower(),))
+            event_info = response.fetchone()
+            
+            if event_info:
+                event_dict = {
+                    'event_id': event_info[0],
+                    'event_name': event_info[1],
+                    'event_code': event_info[2],
+                    'event_date': event_info[3],
+                    'event_description': event_info[4],
+                    'event_location': event_info[5]
+                }
+                return event_dict
+            else:
+                return None
 
-    except Exception as e:
+    except psycopg.Error as e:
         logging.error(f"Error in get_event_by_code: {e}")
         return None
-    finally:
-        close_connection(connection, cur)
+
 
 def cancel_signup(user_id:int, event_id:int):
     """Cancels a user's signup for an event by removing the entry from the user_event_signups table.
