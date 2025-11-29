@@ -227,27 +227,24 @@ def get_event_by_code(event_code:str) -> dict | None:
 def cancel_signup(user_id:int, event_id:int):
     """Cancels a user's signup for an event by removing the entry from the user_event_signups table.
     Returns True if the cancellation was successful, False otherwise."""
-    connection, cur = None, None
+    
     sql = "DELETE FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
     
     try:
-        connection = open_connection()
-        cur = connection.cursor()
+        with psycopg.connect(get_connection_string()) as connection:
 
-        cur.execute(sql, (user_id, event_id))
+            cursor = connection.execute(sql, (user_id, event_id))
 
-        rows_deleted = cur.rowcount
+            rows_deleted = cursor.rowcount
 
-        connection.commit()
+            connection.commit()
 
-        # Return True if a row was deleted, False otherwise.
-        return rows_deleted > 0
+            # Return True if a row was deleted, False otherwise.
+            return rows_deleted > 0
 
     except psycopg.Error as e:
         logging.error(f"Database error in cancel_signup: {e}")
         return False
-    finally:
-        close_connection(connection, cur)
 
 def get_events_for_date(target_date: datetime.date = None) -> list:
     """Retrieves all events that are scheduled to happen at a certain date.
