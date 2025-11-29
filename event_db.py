@@ -251,31 +251,26 @@ def get_events_for_date(target_date: datetime.date = None) -> list:
     If no date is provided, then defaults to tommorows date.
     Returns empty list if no events are scheduled for target date"""
     
-    connection, cur = None, None
-    
     if target_date is None:
         target_date = datetime.date.today() + datetime.timedelta(days=1)
 
     sql = "SELECT event_id, event_name, event_code FROM events WHERE event_date = %s;"
     
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (target_date,))
-        events = []
-        for row in cur.fetchall():
-            events.append({
-                'event_id': row[0],
-                'event_name': row[1],
-                'event_code': row[2]
-            })
-        return events
+        with psycopg.connect(get_connection_string()) as connection:
+            cursor = connection.execute(sql, (target_date,))
+            events = []
+            for row in cursor.fetchall():
+                events.append({
+                    'event_id': row[0],
+                    'event_name': row[1],
+                    'event_code': row[2]
+                })
+            return events
     except psycopg.Error as e:
         logging.error(f"DB Error in get_events_for_date: {e}")
         return []
-    
-    finally:
-        close_connection(connection, cur)
+
 
 def confirm_attendance(user_id:int, event_id:int) -> bool:
     """"
