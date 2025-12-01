@@ -277,25 +277,20 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
     Changes the attendance_confirmed value for a user-event-signup from False to True.
     Returns True if update was successful (1 row changed), otherwise False.
     """
-    connection, cur = None, None
     sql = "UPDATE user_event_signups SET attendance_confirmed = true WHERE user_id = %s and event_id = %s;"
     
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-
-        cur.execute(sql, (user_id, event_id))
-
-        connection.commit()
-
-        #If a value was updated, it will return True, False otherwise
-        return cur.rowcount == 1
-
+        with psycopg.connect(get_connection_string()) as connection:
+            cursor = connection.execute(sql, (user_id, event_id))
+    
+            connection.commit()
+    
+            #If a value was updated, it will return True, False otherwise
+            return cursor.rowcount == 1
+    
     except psycopg.Error as e:
         logging.error(f"Database error in confirming attendance: {e}")
         return False
-    finally:
-        close_connection(connection, cur)
 
 def get_phone_numbers_for_event(event_id):
     connection, cur = None, None
