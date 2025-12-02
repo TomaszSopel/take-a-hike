@@ -282,7 +282,7 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
     try:
         with psycopg.connect(get_connection_string()) as connection:
             cursor = connection.execute(sql, (user_id, event_id))
-    
+
             connection.commit()
     
             #If a value was updated, it will return True, False otherwise
@@ -293,20 +293,17 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
         return False
 
 def get_phone_numbers_for_event(event_id):
-    connection, cur = None, None
-
-    sql = "" \
-    "SELECT phone_number from users " \
-    "JOIN user_event_signups " \
-    "ON users.user_id=user_event_signups.user_id " \
-    "WHERE user_event_signups.event_id=%s;"
-
+    """Retrieves a list of phone numbers for the corresponding event_ID"""
+    sql = """\
+        SELECT phone_number from users 
+        JOIN user_event_signups 
+        ON users.user_id=user_event_signups.user_id 
+        WHERE user_event_signups.event_id=%s;
+        """
     try:
-        connection = open_connection()
-        cur = connection.cursor()
-
-        cur.execute(sql, (event_id,))
-        phone_number_list = cur.fetchall()
+        with psycopg.connect(get_connection_string()) as connection:
+            response = connection.execute(sql, (event_id,))
+            phone_number_list = response.fetchall()
 
         phone_number_list = [item[0] for item in phone_number_list]
 
@@ -314,8 +311,6 @@ def get_phone_numbers_for_event(event_id):
     except psycopg.Error as e:
         logging.error(f"Database error in getting phone numbers for event: {e}")
         return []
-    finally:
-        close_connection(connection, cur)
 
 
 """
