@@ -21,7 +21,6 @@ sms_sender = sms.Sms(client)
 def check_admin(phone_number:str) -> bool | None:
     """Takes a phone number in the form of a string and returns the specific users True or False value for is_admin.
     If the number provided is not found in the users table, returns None."""
-    connection, cur = None, None
     
     normalized_phone_number = event_db.normalize_phone_number(phone_number)
 
@@ -30,21 +29,19 @@ def check_admin(phone_number:str) -> bool | None:
     
     sql = "SELECT is_admin FROM users WHERE phone_number = %s"
     try:
-        connection = event_db.open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (normalized_phone_number,))
+        with psycopg.connect(event_db.get_connection_string()) as connection:
+            response = connection.execute(sql, (normalized_phone_number,))
 
-        response = cur.fetchone()
+            row = response.fetchone()
 
-        if response:
-            return response[0]
-        else:
-            return None
+            if row:
+                return row[0]
+            else:
+                return None
     except psycopg.Error as e:
         logging.error(f"Database error: {e}")
         return None
-    finally:
-        event_db.close_connection(connection, cur)
+
 
 def set_admin_status(phone_number:str, status:bool) -> bool:
     """Changes the is_admin value for the user """
