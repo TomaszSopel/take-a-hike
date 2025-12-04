@@ -45,7 +45,6 @@ def check_admin(phone_number:str) -> bool | None:
 
 def set_admin_status(phone_number:str, status:bool) -> bool:
     """Changes the is_admin value for the user """
-    connection, cur = None, None
     
     normalized_phone_number = event_db.normalize_phone_number(phone_number)
     if not normalized_phone_number:
@@ -54,17 +53,14 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
     query = "UPDATE users SET is_admin = %s WHERE phone_number = %s"
     
     try:
-        connection = event_db.open_connection()
-        cur = connection.cursor()
-        cur.execute(query, (status, normalized_phone_number))
-        connection.commit()
-        return cur.rowcount == 1
+        with psycopg.connect(event_db.get_connection_string()) as connection:
+            response = connection.execute(query, (status, normalized_phone_number))
+            connection.commit()
+            return response.rowcount == 1
     except psycopg.Error as e:
         logging.error(f"DB Error in set_admin_status: {e}")
         return False
-    finally:
-        event_db.close_connection(connection, cur)
-
+    
 def get_headcount(event_code:str) -> int | None:
     """Admin Function: Inputs an event code and outputs number of signups for that event."""
     connection, cur = None, None
