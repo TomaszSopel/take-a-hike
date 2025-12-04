@@ -7,13 +7,23 @@ import psycopg
 
 
 def open_connection() -> psycopg.Connection:
-    return psycopg.connect(
-        host = os.environ.get('HOST'),
-        port = os.environ.get('DB_PORT'),
-        dbname = os.environ.get('DATABASE'),
-        password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
-        user = os.environ.get('USER'),
-    )
+    """
+    Establishes a connection to the database.
+    Prioritizes a connection via DATABASE_URL used by Heroku,
+    If not found, establishes a connection to local DB via env vars.
+    """
+    db_url = os.environ.get('DATABASE_URL')
+
+    if db_url:
+        return psycopg.connect(db_url)
+    else:
+        return psycopg.connect(
+            host = os.environ.get('HOST'),
+            port = os.environ.get('DB_PORT'),
+            dbname = os.environ.get('DATABASE'),
+            password = "" if os.environ.get('PASSWORD') is None else os.environ.get('PASSWORD'),
+            user = os.environ.get('USER'),
+        )
 
 def close_connection(connection, cursor=None):
     if cursor:
