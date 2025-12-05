@@ -25,26 +25,6 @@ def open_connection() -> psycopg.Connection:
             user = os.environ.get('USER'),
         )
 
-
-def get_connection_string():
-    """
-    Constructs the connection string to be reused for passing into functions.
-    Prioritizes the 'DATABASE_URL' environment variable on Heroku,
-    Falls back to local environment variables for local testing.
-    """
-    db_url = os.environ.get('DATABASE_URL')
-
-    if db_url:
-        return db_url
-    else:
-        return (
-            f"host={os.environ.get('HOST')} "
-            f"port={os.environ.get('DB_PORT')} "
-            f"dbname={os.environ.get('DATABASE')} "
-            f"user={os.environ.get('USER')} "
-            f"password={os.environ.get('PASSWORD')}"
-        )
-
 def get_user(number:str):
     """Inputs a single phone number (str) and returns a single user_id (int)
     if they are in the users table, otherwise returns None"""
