@@ -25,11 +25,6 @@ def open_connection() -> psycopg.Connection:
             user = os.environ.get('USER'),
         )
 
-def close_connection(connection, cursor=None):
-    if cursor:
-        cursor.close()
-    if connection:
-        connection.close()
 
 def get_connection_string():
     """
