@@ -35,7 +35,7 @@ def get_user(number:str):
     sql = "SELECT user_id FROM users WHERE phone_number = %s;"
     
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (normalized_number,))
             row = response.fetchone()
             if row:
@@ -55,7 +55,7 @@ def get_phone(user_id:int):
     sql = "SELECT phone_number FROM users WHERE user_id = %s"
     
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (user_id,)) # Pass user_id as a tuple
             row = response.fetchone()
         
@@ -77,7 +77,7 @@ def log_user(phone_number: str):
     
     sql = "INSERT INTO users (phone_number) VALUES (%s) ON CONFLICT (phone_number) DO NOTHING;"
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             connection.execute(sql, (normalized_number,))
             connection.commit()
     except psycopg.Error as e:
@@ -89,7 +89,7 @@ def get_event_id(code:str):
 
     sql = "SELECT event_id FROM events WHERE event_code = %s"
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (code.lower(),))
             row = response.fetchone()
     
@@ -108,7 +108,7 @@ def sign_up(user_id:int, event_id:int):
     sql = "SELECT * FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
 
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (user_id, event_id))
             check = response.fetchone()
 
@@ -136,7 +136,7 @@ def get_user_ids_for_event(event_id:int):
     sql = "SELECT user_id FROM user_event_signups WHERE event_id = %s;"
 
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (event_id,))
             rows = response.fetchall()
             user_id_list = [row[0] for row in rows]
@@ -149,7 +149,7 @@ def get_events():
     """Returns all events currently registered"""
 
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute("SELECT event_code FROM events;")
             rows = response.fetchall()
             events_list = [item[0] for item in rows]
@@ -187,7 +187,7 @@ def get_event_by_code(event_code:str) -> dict | None:
         WHERE event_code = %s;
     """
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (event_code.lower(),))
             event_info = response.fetchone()
             
@@ -216,7 +216,7 @@ def cancel_signup(user_id:int, event_id:int):
     sql = "DELETE FROM user_event_signups WHERE user_id = %s AND event_id = %s;"
     
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
 
             cursor = connection.execute(sql, (user_id, event_id))
 
@@ -242,7 +242,7 @@ def get_events_for_date(target_date: datetime.date = None) -> list:
     sql = "SELECT event_id, event_name, event_code FROM events WHERE event_date = %s;"
     
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             cursor = connection.execute(sql, (target_date,))
             events = []
             for row in cursor.fetchall():
@@ -265,7 +265,7 @@ def confirm_attendance(user_id:int, event_id:int) -> bool:
     sql = "UPDATE user_event_signups SET attendance_confirmed = true WHERE user_id = %s and event_id = %s;"
     
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             cursor = connection.execute(sql, (user_id, event_id))
 
             connection.commit()
@@ -286,7 +286,7 @@ def get_phone_numbers_for_event(event_id):
         WHERE user_event_signups.event_id=%s;
         """
     try:
-        with psycopg.connect(get_connection_string()) as connection:
+        with open_connection() as connection:
             response = connection.execute(sql, (event_id,))
             phone_number_list = response.fetchall()
 
