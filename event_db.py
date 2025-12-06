@@ -127,7 +127,7 @@ def sign_up(user_id:int, event_id:int):
     
     except psycopg.Error as e:
         logging.error(f"Error in sign_up: {e}")
-        return None
+        return False
 
 
 def get_user_ids_for_event(event_id:int):
@@ -231,7 +231,7 @@ def cancel_signup(user_id:int, event_id:int):
         logging.error(f"Database error in cancel_signup: {e}")
         return False
 
-def get_events_for_date(target_date: datetime.date = None) -> list:
+def get_events_for_date(target_date: datetime.date | None = None) -> list:
     """Retrieves all events that are scheduled to happen at a certain date.
     If no date is provided, then defaults to tommorows date.
     Returns empty list if no events are scheduled for target date"""
