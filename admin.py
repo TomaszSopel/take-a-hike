@@ -29,7 +29,7 @@ def check_admin(phone_number:str) -> bool | None:
     
     sql = "SELECT is_admin FROM users WHERE phone_number = %s"
     try:
-        with psycopg.connect(event_db.get_connection_string()) as connection:
+        with event_db.open_connection() as connection:
             response = connection.execute(sql, (normalized_phone_number,))
 
             row = response.fetchone()
