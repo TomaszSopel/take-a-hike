@@ -53,7 +53,7 @@ def set_admin_status(phone_number:str, status:bool) -> bool:
     query = "UPDATE users SET is_admin = %s WHERE phone_number = %s"
     
     try:
-        with psycopg.connect(event_db.get_connection_string()) as connection:
+        with event_db.open_connection() as connection:
             response = connection.execute(query, (status, normalized_phone_number))
             connection.commit()
             return response.rowcount == 1
