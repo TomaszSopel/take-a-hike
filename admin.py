@@ -116,21 +116,17 @@ def delete_event(event_code:str) -> bool:
     will cause all signups for the event to be deleted as well. Returns True if successful, False
     otherwise. 
     """
-    connection, cur = None, None
     sql = "DELETE FROM events WHERE event_code = %s;"
 
     try: 
-        connection = event_db.open_connection()
-        cur = connection.cursor()
-        cur.execute(sql, (event_code.lower(),))
-        rows_deleted = cur.rowcount
-        connection.commit()
-        return rows_deleted > 0
+        with event_db.open_connection() as connection:        
+            cursor = connection.execute(sql, (event_code.lower(),))
+            rows_deleted = cursor.rowcount
+            connection.commit()
+            return rows_deleted > 0
     except psycopg.Error as e:
         logging.error(f"DB Error in delete_event: {e}")
         return False
-    finally:
-        event_db.close_connection(connection, cur)
 
 def get_admins():
     connection, cur = None, None
