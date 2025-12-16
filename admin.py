@@ -10,14 +10,6 @@ from twilio.rest import Client
 
 """"This file handles all the admin related functions"""
 
-
-client = Client(
-        os.environ.get('TWILIO_SID'),
-        os.environ.get('TWILIO_AUTH_TOKEN')
-    )
-sms_sender = sms.Sms(client)
-
-
 def check_admin(phone_number:str) -> bool | None:
     """Takes a phone number in the form of a string and returns the specific users True or False value for is_admin.
     If the number provided is not found in the users table, returns None."""
@@ -104,7 +96,7 @@ def add_event(code: str, event_date: str, name: str) -> int | None:
             row = cursor.fetchone()
             connection.commit()
             if row:
-                return row [0]
+                return row[0]
             return None
     except (psycopg.Error, ValueError) as e:
         logging.error(f"DB Error or invalid date format in add_event: {e}")
@@ -158,6 +150,11 @@ def get_confirmation_count(event_id):
         logging.error(f"Error in get_confirmation_count: {e}")
     
 def notify_event_participants(event_id, msg:str):
+    client = Client(
+            os.environ.get('TWILIO_SID'),
+            os.environ.get('TWILIO_AUTH_TOKEN')
+        )
+    sms_sender = sms.Sms(client)
 
     phone_numbers_list = event_db.get_phone_numbers_for_event(event_id)
 
