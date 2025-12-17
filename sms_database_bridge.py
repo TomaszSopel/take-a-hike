@@ -1,5 +1,6 @@
 import admin
 import event_db
+import logging
 
 
 class SignupCommand:
@@ -31,7 +32,7 @@ class SignupCommand:
             else: # Handles if sign_up returns False (e.g., from an error)
                 return "Signup failed due to a database issue."
         except Exception as error:
-            print(f"Error in SignupCommand.execute: {error}")
+            logging.error(f"Error in SignupCommand.execute: {error}")
             return "Error (Signup)"
 
 class CancelCommand:
@@ -56,7 +57,7 @@ class CancelCommand:
             else:
                 return f"You were not signed up for {event['event_name']}."
         except Exception as error:
-            print(f"Error in CancelCommand.execute: {error}")
+            logging.error(f"Error in CancelCommand.execute: {error}")
             return "An error occured while trying to cancel your signup."
 
 
@@ -85,7 +86,7 @@ class AddAdminCommand:
                 return f"Error: Could not find or update user {self.target_phone_number}"
             
         except Exception as error:
-            print(f"Error in AddAdminCommand.execute: {error}")
+            logging.error(f"Error in AddAdminCommand.execute: {error}")
             return "An error occured while trying to assign a new admin."
 
 class HeadCountCommand:
@@ -166,7 +167,7 @@ class DeleteEventCommand:
             else:
                 return f"Error: Event '{self.event_code}' not found"
         except Exception as e:
-            print(f"Error in DeleteEventCommand.execute: {e}")
+            logging.error(f"Error in DeleteEventCommand.execute: {e}")
             return "An error occurred while trying to delete the event."
         
 class ConfirmEventCommand:
@@ -198,7 +199,7 @@ class ConfirmEventCommand:
                 return f"Your attendance for {event['event_name']} was unable to be confirmed, please contact an administrator!"
 
         except Exception as error:
-            print(f"Error in ConfirmCommand.execute: {error}")
+            logging.error(f"Error in ConfirmCommand.execute: {error}")
             return "Error (Confirm)"
         
 # Dictionary of all commands
@@ -264,7 +265,7 @@ def process_sms(phone_number, message_body):
                 return "Command not configured correctly."
         
         except Exception as e:
-            print(f"Error in process_sms: {e}")
+            logging.error(f"Error in process_sms: {e}")
             return "An error occurred processing your request."
     else:
         return f"Unknown command: {command_keyword}."
